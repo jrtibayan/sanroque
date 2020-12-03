@@ -1,0 +1,59 @@
+Users
+    LabTech
+    XrayTech
+    Cashier
+    Manger
+    Owner
+    SystemAdmin
+///TODO: Give users new fields [group, suffix, license]
+///TODO: user logs in using email and password
+///TODO: cannot go to user register if not logged in
+///TODO: upon register emails password to the user
+///TODO: can change password
+***TODO: cannot register user if email is already existing
+***TODO: only SystemAdmin can register new users
+***TODO: manager can add new cashier and lab and xray tech
+
+
+
+Manager, Owner, SystemAdmin can
+    -   add new refering doctor
+    -   add new tech
+    -   add new pathologist
+
+Techs can
+    -   enter requests
+    -   pick a paid request and type results
+
+Cashier can
+    -   pick a request
+        -   enter cash paid
+        -   e
+    SystemAdminther income and expenses
+    -   can view transactions with total of how much cash should be on hand
+
+
+----------------------------------------------------------------
+managing refering doctor
+    -   can display list of refering doctors in database sorted by lastname > firstname
+    -   display only 10 and use right and left arrow to browse list
+    -   if on first page left arrow is disabled
+    -   if on last page right arrow is disabled
+    -   search "*" to show all
+    -   search the string to show only doctors with that string and user can browse those list
+    -   add new doctor to the list
+    -   can delete new doctor with no transactions yet
+    -   edit doctor info (only available to SystemAdmin)
+    -   refering doctor have
+        -   firstname
+        -   lastname
+        -   middlename
+        -   birthdate
+        -   license number
+
+----------------------------------------------------------------
+managing users
+----------------------------------------------------------------
+----------------------------------------------------------------
+----------------------------------------------------------------
+----------------------------------------------------------------

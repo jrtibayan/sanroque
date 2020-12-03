@@ -1,0 +1,23 @@
+{
+  "name": "sanroque",
+  "version": "1.0.0",
+  "description": "POS App for San Roque Diagnostics",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app"
+  },
+  "dependencies": {
+    "bcryptjs": "*",
+    "body-parser": "*",
+    "cors": "*",
+    "express": "*",
+    "jsonwebtoken": "*",
+    "mongoose": "^5.10.10",
+    "nodemailer": "^6.4.16",
+    "passport": "*",
+    "passport-jwt": "*"
+  },
+  "author": "Jeric Tibayan",
+  "license": "ISC"
+}
