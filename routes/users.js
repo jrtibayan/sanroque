@@ -2,33 +2,118 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
-const config = require('../config/database')
+const config = require('../config/database');
+const sender = require('../config/gmail');
+const nodemailer = require('nodemailer');
 
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: sender.email,
+      pass: sender.password
+    }
+});
 
 const User = require('../models/user');
 
+function randomString(length, chars) {
+    var result = '';
+    for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+    return result;
+}
+
+function emailRegistrationSuccessful(email, password) {
+    const mailOptions = {
+        from: sender.email,
+        to: email,
+        subject: 'San Roque | You are now a registered user',
+        text: 'Congratulations!\n\nYou are now registered to San Roque App.\nPlease use the credentials below for your first login.\nYou may change the password anytime from your dashboard.\n\nEmail: ' + email + '\nPassword: ' + password
+    };
+    console.log('Prepared mailOptions for mailing later');
+
+    console.log('Will now email user his/her new password');
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            console.log('Failed to email the user');
+            console.log(error);
+        } else {
+            console.log('Email sent');
+        }
+    });
+}
+
+function registerUser(newUser, newPassword, res) {
+    User.getUserByEmail(
+        newUser.email, 
+        (err, user) => {
+            console.log('Finding user with email: ' + newUser.email);
+
+            if(err) throw err;
+
+            if(user) {
+                console.log('User already exist');
+                return res.json({success: false, msg: 'User already exist'});
+            }
+            
+            console.log('User not found. Will add the user');
+            
+            console.log('Forward newUser to addUser function to add the user');
+            User.addUser(newUser, (err, user) => {
+                if(err) {
+                    console.log('Error adding user');
+                    res.json({success: false, msg: 'Error adding user'});
+                } else {
+                    console.log('User registered');
+                    res.json({success: true, msg: 'User added'});
+
+                    emailRegistrationSuccessful(user.email, newPassword);
+                }
+            });
+        }
+    );
+}
+
+function prepareNewUser(user) {
+    const newPassword = randomString(12, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+    console.log('Generated random password for the user');
+    
+    var newUser = null;
+    if(user.email == 'jrhod_baby@yahoo.com') {
+        newUser = new User({
+            firstname: 'Jeric',
+            lastname: 'Tibayan',
+            email: 'jrhod_baby@yahoo.com',
+            password: newPassword,
+            role: 'admin'
+        });
+        console.log('Prepared newUser');
+    } else {
+        newUser = new User({
+            firstname: user.firstname,
+            lastname: user.lastname,
+            suffix: user.suffix,
+            license: user.license,
+            email: user.email,
+            password: newPassword,
+            role: user.role
+        });
+    }
+    console.log('Prepared newUser');
+    return newUser;
+}
 
 // Register
 router.post(
     '/register', 
     (req, res, next) => {
-        let newUser = new User({
-            firstname: req.body.firstname,
-            lastname: req.body.lastname,
-            suffix: req.body.suffix,
-            license: req.body.license,
-            email: req.body.email,
-            password: req.body.password,
-            role: req.body.role
-        });
+        console.log('\n\n\nInside USER Route - REGISTER Start');
+        console.log('Adding user with emailad ' + req.body.email);
 
-        User.addUser(newUser, (err, user) => {
-            if(err) {
-                res.json({success: false, msg: 'Failed to register user'});
-            } else {
-                res.json({success: true, msg: 'User registered'});
-            }
-        });
+        let newUser = prepareNewUser(req.body);
+
+        registerUser(newUser, newUser.password, res);
+
+        console.log('Inside USER Route - REGISTER End');
     }
 );
 
@@ -117,33 +202,15 @@ router.post(
                         if(users.length > 0) {
                             console.log('Users exist ' + users[0].email);
                             console.log('Special procedure will be cancelled');
-                            // users are found
-                            // return error message
                             res.json({success: false, msg: 'Collection already populated'});
                         } else {
                             console.log('No user in the database');
                             console.log('Adding default admin user');
 
-                            let newUser = new User({
-                                firstname: 'Jeric',
-                                lastname: 'Tibayan',
-                                email: 'jrhod_baby@yahoo.com',
-                                password: 's@password1',
-                                role: 'admin'
-                            });
+                            let newUser = prepareNewUser({email: 'jrhod_baby@yahoo.com'});
                     
-                            User.addUser(newUser, (err, user) => {
-                                if(err) {
-                                    console.log('Error adding default admin user');
-                                    res.json({success: false, msg: 'Error adding default admin user'});
-                                } else {
-                                    console.log('Default admin user registered');
-                                    res.json({success: true, msg: 'Default user added'});
-                                }
-                            });
-                            
+                            registerUser(newUser, newUser.password, res);
                         }
-                        
                     }
                 }
             );
