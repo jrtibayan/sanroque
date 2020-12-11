@@ -15,7 +15,10 @@ export class AuthService {
   ) { }
 
   registerUser(user) {
-    const httpOptions = {headers: new HttpHeaders({'Content-Type':  'application/json'})};
+    const httpOptions = {headers: new HttpHeaders({
+      'Content-Type':  'application/json',
+      'Authorization': this.authToken
+    })};
     return this.http.post(
       'http://localhost:3000/users/register', 
       user, 

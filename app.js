@@ -75,7 +75,51 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/index.html'));
 });
 
+
+function initializeDatabase() {
+    // list of roles with their allowed actions
+    const Role = require('./models/role');
+    function registerRole(newRole) {
+        newRole.save(
+            (err, role) => {
+                if(err) {
+                    console.log('Error adding role');
+                    //res.json({success: false, msg: 'Error adding role'});
+                } else {
+                    console.log('Role registered');
+                    //res.json({success: true, msg: 'Role added'});
+                }
+            }
+        );
+    }
+    
+    let newRole = new Role({
+        name: 'admin',
+        allowedActions: [
+            'register director',
+            'register manager',
+            'register medtech',
+            'register xraytech',
+            'register cashier'
+        ]
+    });
+    registerRole(newRole);
+
+    newRole = new Role({
+        name: 'manager',
+        allowedActions: [
+            'register medtech',
+            'register xraytech',
+            'register cashier'
+        ]
+    });
+    registerRole(newRole); 
+
+}
+
 // Start Server
 app.listen(port, () => {
     console.log('Server started on port ' + port);
+
+    //initializeDatabase();
 });

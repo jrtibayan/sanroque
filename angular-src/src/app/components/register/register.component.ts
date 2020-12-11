@@ -38,7 +38,7 @@ export class RegisterComponent implements OnInit {
       license: this.license,
       email: this.email,
       password: this.password,
-      role: "System Administrator"
+      role: this.role
     };
 
     // Required Fields
@@ -61,8 +61,8 @@ export class RegisterComponent implements OnInit {
     this.authService.registerUser(user).subscribe(
       data => {
         if((data as any).success) {
-          this.flashMessage.show('You are now registered and can log in', {cssClass: 'alert-success', timeout: 3000});
-          this.router.navigate(['/login']);
+          this.flashMessage.show('User is now registered', {cssClass: 'alert-success', timeout: 3000});
+          this.router.navigate(['/register']);
         } else {
           this.flashMessage.show((data as any).msg, {cssClass: 'alert-danger', timeout: 3000});
           this.router.navigate(['/register']);

@@ -10,9 +10,16 @@ Users
 ///TODO: cannot go to user register if not logged in
 ///TODO: upon register emails password to the user
 ///TODO: can change password
-***TODO: cannot register user if email is already existing
-***TODO: only SystemAdmin can register new users
-***TODO: manager can add new cashier and lab and xray tech
+///TODO: cannot register user if email is already existing
+///TODO: be able to select which role for user to be registered
+///TODO: depending on the role of logged in. role to be registed is checked if allowed to add that role
+///1. add roles field on front end
+///2. admin register manager
+///3. admin register cashier
+///4. admin register xraytech
+///5. admin register medtech
+6. only display roles that user is allowed to register
+
 
 
 

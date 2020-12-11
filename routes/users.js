@@ -15,6 +15,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const User = require('../models/user');
+const Role = require('../models/role');
 
 function randomString(length, chars) {
     var result = '';
@@ -83,7 +84,8 @@ function prepareNewUser(user) {
             firstname: 'Jeric',
             lastname: 'Tibayan',
             email: 'jrhod_baby@yahoo.com',
-            password: newPassword,
+            //password: newPassword,
+            password: 'password',
             role: 'admin'
         });
         console.log('Prepared newUser');
@@ -105,13 +107,38 @@ function prepareNewUser(user) {
 // Register
 router.post(
     '/register', 
+    passport.authenticate('jwt', {session: false}), 
     (req, res, next) => {
         console.log('\n\n\nInside USER Route - REGISTER Start');
         console.log('Adding user with emailad ' + req.body.email);
 
         let newUser = prepareNewUser(req.body);
+        let searchRole = req.user.role;
 
-        registerUser(newUser, newUser.password, res);
+        // using user.role find what allowedActions for role
+        Role.getRoleByName(
+            searchRole, 
+            (err, role) => {
+                console.log('Finding role with name: ' + searchRole);
+
+                if(err) throw err;
+
+                if(!role) {
+                    console.log('Role not found');
+                    return res.json({success: false, msg: 'Role not found'});
+                }
+                
+                let allowedActions = role.allowedActions;
+                console.log(role.allowedActions);
+
+                if(allowedActions.includes('register ' + newUser.role)) {
+                    registerUser(newUser, newUser.password, res);
+                } else {
+                    console.log('User not allowed to register ' + newUser.role);
+                    res.json({success: false, msg: 'User not allowed to register ' + newUser.role});
+                }
+            }
+        );
 
         console.log('Inside USER Route - REGISTER End');
     }
@@ -207,6 +234,8 @@ router.post(
                             console.log('No user in the database');
                             console.log('Adding default admin user');
 
+                            // No user must mean the app is new so I must check important databases if it exist
+
                             let newUser = prepareNewUser({email: 'jrhod_baby@yahoo.com'});
                     
                             registerUser(newUser, newUser.password, res);
@@ -276,5 +305,25 @@ router.get(
         res.json({user: req.user});
     }
 );
+
+
+
+// testing
+router.post(
+    '/test',
+    passport.authenticate('jwt', {session: false}), 
+    (req, res, next) => {
+        res.json({
+            success: true, 
+            firstname: req.user.firstname,
+            lastname: req.user.lastname,
+            email: req.user.email,
+            friends: req.user.friends
+        });
+    }
+);
+
+
+
 
 module.exports = router;
