@@ -18,7 +18,20 @@ Users
 ///3. admin register cashier
 ///4. admin register xraytech
 ///5. admin register medtech
-6. only display roles that user is allowed to register
+6. only display roles that user is allowed to register (do later)
+7. medtech may request for test
+    create front end for transactions
+        be able to search and select patient from list
+        be able to click new patient to register new patient
+        be able to search and select test to register for
+            if the test if package then register the test
+            if the test if per item show different test and select before registered
+        be able to list all request for the display
+        be able to select test and click button for add results
+        be able to select test and void if no result yet
+    create front end for patients registration
+
+
 
 
 

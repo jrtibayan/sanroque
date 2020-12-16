@@ -36,6 +36,8 @@ const app = express();
 
 const users = require('./routes/users');
 const doctors = require('./routes/doctors');
+const patients = require('./routes/patients');
+const transactions = require('./routes/transactions');
 
 
 const port = 3000;
@@ -64,6 +66,8 @@ require('./config/passport')(passport);
 
 app.use('/users', users);
 app.use('/doctors', doctors);
+app.use('/patients', patients);
+app.use('/transactions', transactions);
 
 
 // Index Route

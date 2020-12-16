@@ -28,6 +28,10 @@ const DoctorSchema = mongoose.Schema({
     licenseno: {
         type: String,
         required: true
+    },
+    defaultPatho: {
+        type: Boolean,
+        required: true
     }
 });
 

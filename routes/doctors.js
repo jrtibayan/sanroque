@@ -19,6 +19,7 @@ router.post(
             lastname: req.body.lastname,
             bday: req.body.bday,
             suffix: req.body.suffix,
+            defaultPatho: false,
             licenseno: req.body.licenseno
         });
 

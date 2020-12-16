@@ -18,6 +18,7 @@ import { FlashMessagesModule } from 'angular2-flash-messages';
 import { HttpClientModule } from '@angular/common/http';
 import { AuthGuard } from './guards/auth.guard';
 import { DoctorsComponent } from './components/doctors/doctors.component';
+import { TransactionsComponent } from './components/transactions/transactions.component';
 
 const appRoutes: Routes = [
   {path: 'manage/doctors', component: DoctorsComponent, canActivate: [AuthGuard]},
@@ -25,6 +26,7 @@ const appRoutes: Routes = [
   {path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent, canActivate: [AuthGuard]},
+  {path: 'transactions', component: TransactionsComponent, canActivate: [AuthGuard]},
   {path: '', component: HomeComponent}
 ];
 
@@ -37,7 +39,8 @@ const appRoutes: Routes = [
     HomeComponent,
     DashboardComponent,
     ProfileComponent,
-    DoctorsComponent
+    DoctorsComponent,
+    TransactionsComponent
   ],
   imports: [
     HttpClientModule,
