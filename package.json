@@ -4,7 +4,7 @@
   "description": "POS App for San Roque Diagnostics",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node_modules/mocha/bin/mocha",
     "start": "node app"
   },
   "dependencies": {
@@ -13,10 +13,12 @@
     "cors": "*",
     "express": "*",
     "jsonwebtoken": "*",
+    "mocha": "^8.2.1",
     "mongoose": "^5.10.10",
     "nodemailer": "^6.4.16",
     "passport": "*",
-    "passport-jwt": "*"
+    "passport-jwt": "*",
+    "test": "^0.6.0"
   },
   "author": "Jeric Tibayan",
   "license": "ISC"
