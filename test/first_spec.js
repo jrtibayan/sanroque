@@ -18,31 +18,16 @@ var assert = require("assert");
 
 chai.use(chaiHttp);
 
-//const apiRoot = 'http://localhost:3000';
-const apiRoot = require('../app');
+const apiRoot = 'http://localhost:3000';
+//const apiRoot = require('../app');
 
 describe('SAN ROQUE APP', function(){
 
 
 	describe('POST /users/authenticate', function(){
-		it(
-			'it should return status = 200',
-			function(done){
-				chai.request(apiRoot)
-				.post('/users/authenticate')
-				.send({
-					"email":"jrhod_baby@yahoo.com",
-					"password": "password"
-				})
-		    	.end(function(err,res){
-		    		res.should.have.status(200);
-		   			done();
-	   			});
-			}
-		);
 
 		it(
-			'it should return response with success property = true',
+			'it should allow authorized user',
 			function(done){
 				chai.request(apiRoot)
 				.post('/users/authenticate')
@@ -53,28 +38,34 @@ describe('SAN ROQUE APP', function(){
 		    	.end(function(err,res){
 		    		res.should.have.status(200);
 		    		res.body.should.have.property('success').eql(true);
-		    		//console.log(res.body);
+		    		res.body.should.have.property('token');
+		    		res.body.should.have.property('msg');
+		    		res.body.should.have.property('user');
 		   			done();
 	   			});
 			}
 		);
 
 		it(
-			'it should return response with token property',
+			'it should NOT allow unauthorized user',
 			function(done){
 				chai.request(apiRoot)
 				.post('/users/authenticate')
 				.send({
-					"email":"jrhod_baby@yahoo.com",
-					"password": "password"
+					"email":"jrhod_baby2@yahoo.com",
+					"password": "pass4word"
 				})
 		    	.end(function(err,res){
-		    		res.body.should.have.property('token');
-		    		//console.log(res.body);
+		    		console.log(res.body);
+		    		res.body.should.have.property('success').eql(false);
+		    		res.body.should.have.property('msg');
+		    		res.body.should.not.have.property('token');
+		    		res.body.should.not.have.property('user');
 		   			done();
 	   			});
 			}
 		);
+
 	});
 
 

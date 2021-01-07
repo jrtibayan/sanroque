@@ -5,7 +5,7 @@ const cors = require('cors');
 const passport = require('passport');
 const mongoose = require('mongoose');
 const config = require('./config/database');
-let conf = require('config'); //we load the db location from the JSON files
+//let conf = require('config'); //we load the db location from the JSON files
 let morgan = require('morgan');
 
 
@@ -13,8 +13,8 @@ let morgan = require('morgan');
 //mongoose.connect(config.database);
 //MongoClient.connect("mongodb://localhost:27017/YourDB", { useNewUrlParser: true });
 mongoose.connect(
-    //config.database, 
-    conf.DBHost,
+    config.database, 
+    //conf.DBHost,
     { 
         useNewUrlParser: true, 
         useUnifiedTopology: true
@@ -33,15 +33,16 @@ mongoose.connection.on('error', (err) => {
     console.log('Database error: ' + err);
 });
 
+
+const app = express();
+
+/*
 //don't show the log when it is test
 if(conf.util.getEnv('NODE_ENV') !== 'test') {
     //use morgan to log at command line
     app.use(morgan('combined')); //'combined' outputs the Apache style LOGs
 }
-
-
-
-const app = express();
+*/
 
 
 
@@ -108,7 +109,7 @@ function initializeDatabase() {
                     console.log('Error adding role');
                     //res.json({success: false, msg: 'Error adding role'});
                 } else {
-                    console.log('Role registered');
+                    //console.log('Role registered');
                     //res.json({success: true, msg: 'Role added'});
                 }
             }
