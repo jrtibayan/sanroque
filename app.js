@@ -5,13 +5,16 @@ const cors = require('cors');
 const passport = require('passport');
 const mongoose = require('mongoose');
 const config = require('./config/database');
+let conf = require('config'); //we load the db location from the JSON files
+let morgan = require('morgan');
 
 
 // Connect to database
 //mongoose.connect(config.database);
 //MongoClient.connect("mongodb://localhost:27017/YourDB", { useNewUrlParser: true });
 mongoose.connect(
-    config.database, 
+    //config.database, 
+    conf.DBHost,
     { 
         useNewUrlParser: true, 
         useUnifiedTopology: true
@@ -30,8 +33,17 @@ mongoose.connection.on('error', (err) => {
     console.log('Database error: ' + err);
 });
 
+//don't show the log when it is test
+if(conf.util.getEnv('NODE_ENV') !== 'test') {
+    //use morgan to log at command line
+    app.use(morgan('combined')); //'combined' outputs the Apache style LOGs
+}
+
+
 
 const app = express();
+
+
 
 
 const users = require('./routes/users');
@@ -54,6 +66,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Body Parser Middleware
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.text());
+app.use(bodyParser.json({ type: 'application/json'}));
+
+
+
 
 
 // Passport Middleware
@@ -121,9 +139,19 @@ function initializeDatabase() {
 
 }
 
+/*
 // Start Server
 app.listen(port, () => {
     console.log('Server started on port ' + port);
 
     //initializeDatabase();
 });
+*/
+
+app.listen(port);
+console.log('Server started on port ' + port);
+
+
+
+
+module.exports = app;

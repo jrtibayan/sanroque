@@ -11,6 +11,7 @@
     "bcryptjs": "*",
     "body-parser": "*",
     "cors": "*",
+    "config": "^1.20.1",
     "express": "*",
     "jsonwebtoken": "*",
     "mocha": "^8.2.1",
@@ -18,8 +19,14 @@
     "nodemailer": "^6.4.16",
     "passport": "*",
     "passport-jwt": "*",
-    "test": "^0.6.0"
+    "test": "^0.6.0",
+    "morgan": "^1.7.0"
   },
   "author": "Jeric Tibayan",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "request": "^2.88.2"
+  }
 }
