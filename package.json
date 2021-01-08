@@ -4,8 +4,8 @@
   "description": "POS App for San Roque Diagnostics",
   "main": "app.js",
   "scripts": {
-    "test": "node_modules/mocha/bin/mocha",
-    "start": "node app"
+    "test": "node_modules/mocha/bin/mocha --exit",
+    "start": "set NODE_ENV=dev && node app.js"
   },
   "dependencies": {
     "bcryptjs": "*",

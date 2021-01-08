@@ -51,15 +51,15 @@ module.exports.getUsers = function(query, callback){
 }
 
 module.exports.addUser = function(newUser, callback) {
-    console.log('Inside User Model - ADDUSER Start');
+    //console.log('Inside User Model - ADDUSER Start');
 
-    console.log('Will now encrypt the password');
+    //console.log('Will now encrypt the password');
     bcrypt.genSalt(
         10, 
         (err, salt) => {
             bcrypt.hash(newUser.password, salt, (err, hash) => {
                 if(err) {
-                    console.log('Password encryption failed');
+                    //console.log('Password encryption failed');
                     throw err;
                 }
                 newUser.password = hash;
@@ -68,7 +68,7 @@ module.exports.addUser = function(newUser, callback) {
         }
     );
     
-    console.log('Inside User Model - ADDUSER End');
+    //console.log('Inside User Model - ADDUSER End');
 }
 
 
@@ -77,7 +77,7 @@ module.exports.updateUser = function(query, set) {
 
     const res = User.updateOne(query, set, options, function (err) {
         if (err) return console.error(err);         
-        console.log('User update successful');
+        //console.log('User update successful');
     });
 }
 
@@ -106,7 +106,7 @@ module.exports.changePassword = function(email, password) {
                 update = {"$set": {"password": newPassword}};
                 
                 User.updateUser(query, update);
-                console.log('Password updated');
+                //console.log('Password updated');
             });
         }
     );
