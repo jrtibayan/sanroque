@@ -4,7 +4,7 @@
   "description": "POS App for San Roque Diagnostics",
   "main": "app.js",
   "scripts": {
-    "test": "node_modules/mocha/bin/mocha --exit",
+    "test": "node_modules/mocha/bin/mocha --require mock-local-storage --exit",
     "start": "set NODE_ENV=dev && node app.js"
   },
   "dependencies": {
@@ -27,6 +27,7 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
+    "mock-local-storage": "^1.1.15",
     "request": "^2.88.2"
   }
 }

@@ -23,6 +23,8 @@ describe('SAN ROQUE APP', function(){
 
 	describe('POST /users/authenticate', function(){
 
+		localStorage.clear();
+
 		// since database empty I added a feature to add a default admin user by logging in using the following credentials
 		//		email: admin
 		//		password: password
@@ -76,6 +78,7 @@ describe('SAN ROQUE APP', function(){
 					"password": "password"
 				})
 		    	.end(function(err,res){
+		    		localStorage.setItem('id_token', res.body.token);
 		    		res.body.should.have.property('success').eql(true);
 		    		res.body.should.have.property('msg');
 		    		res.body.should.have.property('token');
@@ -84,7 +87,60 @@ describe('SAN ROQUE APP', function(){
 	   			});
 			}
 		);
+
+		
+		it(
+			'it should allow to display profile for logged in users',
+			function(done){
+				chai.request(apiRoot)
+				.get('/users/profile')
+				.set({ Authorization: localStorage.getItem('id_token') })
+		    	.end(function(err,res){
+		    		res.body.should.have.property('success').eql(true);
+		    		res.body.should.have.property('user');
+		   			done();
+	   			});
+			}
+		);
+
+		it(
+			'it should NOT allow to display profile unauthorized users',
+			function(done){
+				chai.request(apiRoot)
+				.get('/users/profile')
+		    	.end(function(err,res){
+		    		res.body.should.not.have.property('success');
+		    		res.body.should.not.have.property('user');
+		   			done();
+	   			});
+			}
+		);
+
+
+		it(
+			'it should allow user to register another user',
+			function(done){
+				chai.request(apiRoot)
+				.post('/users/register')
+				.send({
+					"firstname":"Jeric Tibayan2",
+					"lastname":"Jeric Tibayan2",
+					"email":"jrhod_baby21@yahoo.com",
+					"password": "password2",
+				    "role": "cashier"
+				})
+				.set({ Authorization: localStorage.getItem('id_token') })
+		    	.end(function(err,res){
+		    		res.should.have.status(200);
+		    		res.body.should.have.property('success').eql(true);
+		    		res.body.should.have.property('msg');
+		   			done();
+	   			});
+			}
+		);
+			
 	});
+
 
 
 });

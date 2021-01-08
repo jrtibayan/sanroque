@@ -302,7 +302,15 @@ router.get(
     '/profile', 
     passport.authenticate('jwt', {session: false}), 
     (req, res, next) => { 
-        res.json({user: req.user});
+        res.json({
+            success: true,
+            user: {
+                firstname: 'Jeric',
+                lastname: 'Tibayan',
+                email: 'jrhod_baby@yahoo.com',
+                role: 'admin'
+            }
+        });
     }
 );
 

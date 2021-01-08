@@ -25,7 +25,7 @@ mongoose.connection.on('connected', () => {
 
     // delete test database if we are running test
     if(conf.util.getEnv('NODE_ENV') === 'test') {
-        mongoose.connection.db.dropDatabase();
+        initializeDatabase();
     }
 });
 
@@ -101,6 +101,8 @@ app.get('*', (req, res) => {
 
 
 function initializeDatabase() {
+    mongoose.connection.db.dropDatabase();
+
     // list of roles with their allowed actions
     const Role = require('./models/role');
     function registerRole(newRole) {
@@ -152,6 +154,7 @@ app.listen(port, () => {
 
 app.listen(port);
 console.log('Server started on port ' + port);
+//initializeDatabase();
 
 
 
