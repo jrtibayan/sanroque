@@ -33,22 +33,17 @@ describe('SAN ROQUE APP', function () {
             })
             .end(function (err, res) {
               let er = null
+
               if (err) er = err
+
               else {
                 res.should.have.status(200)
                 res.body.should.have.property('success').eql(false)
                 res.body.should.have.property('msg')
-                try {
-                  'null'.should.be.ok
-                } catch {
-                  if (err) er = err
-
-                  console.log(er)
-                }
               }
 
-              if (er) return done(err)
-              done()
+              if (er) done(er)
+              else done()
             })
         }
       )
@@ -63,13 +58,17 @@ describe('SAN ROQUE APP', function () {
               password: 'password'
             })
             .end(function (err, res) {
-              if (err) return done(err)
+              let er = null
+
+              if (err) er = err
 
               res.should.have.status(200)
               res.body.should.have.property('success').eql(true)
               res.body.should.have.property('msg')
               res.body.should.not.have.property('token')
-              done()
+
+              if (er) done(er)
+              else done()
             })
         }
       )
@@ -84,13 +83,16 @@ describe('SAN ROQUE APP', function () {
               password: 'password'
             })
             .end(function (err, res) {
-              if (err) return done(err)
+              let er = null
+
+              if (err) er = err
 
               res.should.have.status(200)
               res.body.should.have.property('success').eql(false)
               res.body.should.have.property('msg')
 
-              done()
+              if (er) done(er)
+              else done()
             })
         }
       )
@@ -105,7 +107,9 @@ describe('SAN ROQUE APP', function () {
               password: 'password'
             })
             .end(function (err, res) {
-              if (err) return done(err)
+              let er = null
+
+              if (err) er = err
 
               res.should.have.status(200)
               res.body.should.have.property('success').eql(true)
@@ -113,11 +117,11 @@ describe('SAN ROQUE APP', function () {
               res.body.should.have.property('token')
               res.body.should.have.property('user')
 
-              localStorage.setItem('id_token', res.body.token)
-              localStorage.setItem('defaultAdmin', res.body.token)
-              localStorage.getItem('id_token').should.be.ok // means someone is logged in
+              localStorage.setItem('id_token', res.body.token) // setting token will make browser recognize user as logged in
+              localStorage.setItem('defaultAdmin', res.body.token) // save the token of admin to use it later if need to log in
 
-              done()
+              if (er) done(er)
+              else done()
             })
         }
       )
@@ -132,12 +136,16 @@ describe('SAN ROQUE APP', function () {
               password: 'password'
             })
             .end(function (err, res) {
-              if (err) return done(err)
+              let er = null
+
+              if (err) er = err
 
               res.should.have.status(200)
               res.body.should.have.property('success').eql(false)
               res.body.should.have.property('msg')
-              done()
+
+              if (er) done(er)
+              else done()
             })
         }
       )
@@ -158,15 +166,20 @@ describe('SAN ROQUE APP', function () {
             .get('/users/profile')
             .set({ Authorization: localStorage.getItem('id_token') })
             .end(function (err, res) {
-              if (err) return done(err)
+              let er = null
+
+              if (err) er = err
 
               res.body.should.have.property('success').eql(true)
               res.body.should.have.property('user')
-              done()
+
+              if (er) done(er)
+              else done()
             })
         }
       )
     })
+
     describe('NOT Logged in', function () {
       beforeEach(function () {
         localStorage.removeItem('id_token')
@@ -178,11 +191,15 @@ describe('SAN ROQUE APP', function () {
           chai.request(server)
             .get('/users/profile')
             .end(function (err, res) {
-              if (err) return done(err)
+              let er = null
+
+              if (err) er = err
 
               res.body.should.eql({})
               res.body.should.not.have.property('token')
-              done()
+
+              if (er) done(er)
+              else done()
             })
         }
       )
@@ -195,6 +212,7 @@ describe('SAN ROQUE APP', function () {
         localStorage.removeItem('id_token')
         localStorage.setItem('id_token', localStorage.getItem('defaultAdmin'))
       })
+
       it(
         'it should allow user to register another user',
         function (done) {
@@ -209,16 +227,21 @@ describe('SAN ROQUE APP', function () {
             })
             .set({ Authorization: localStorage.getItem('id_token') })
             .end(function (err, res) {
-              if (err) return done(err)
+              let er = null
+
+              if (err) er = err
 
               res.should.have.status(200)
               res.body.should.have.property('success').eql(true)
               res.body.should.have.property('msg')
-              done()
+
+              if (er) done(er)
+              else done()
             })
         }
       )
     })
+
     describe('NOT Logged in', function () {
       beforeEach(function () {
         localStorage.removeItem('id_token')
