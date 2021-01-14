@@ -19,7 +19,7 @@ describe('SAN ROQUE APP', function () {
   describe('POST /users/authenticate', function () {
     describe('Not logged in', function () {
       beforeEach(function () {
-        localStorage.setItem('id_token', null)
+        localStorage.removeItem('id_token')
       })
 
       it(
@@ -139,7 +139,7 @@ describe('SAN ROQUE APP', function () {
   describe('GET /users/profile', function () {
     describe('Admin logged in', function () {
       beforeEach(function () {
-        localStorage.setItem('id_token', null)
+        localStorage.removeItem('id_token')
         localStorage.setItem('id_token', localStorage.getItem('defaultAdmin'))
       })
 
@@ -161,7 +161,7 @@ describe('SAN ROQUE APP', function () {
     })
     describe('NOT Logged in', function () {
       beforeEach(function () {
-        localStorage.setItem('id_token', null)
+        localStorage.removeItem('id_token')
       })
 
       it(
@@ -184,7 +184,7 @@ describe('SAN ROQUE APP', function () {
   describe('POST /users/register', function () {
     describe('Admin logged in', function () {
       beforeEach(function () {
-        localStorage.setItem('id_token', null)
+        localStorage.removeItem('id_token')
         localStorage.setItem('id_token', localStorage.getItem('defaultAdmin'))
       })
       it(
@@ -213,7 +213,7 @@ describe('SAN ROQUE APP', function () {
     })
     describe('NOT Logged in', function () {
       beforeEach(function () {
-        localStorage.setItem('id_token', null)
+        localStorage.removeItem('id_token')
       })
     })
   })
