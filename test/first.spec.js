@@ -32,14 +32,22 @@ describe('SAN ROQUE APP', function () {
               password: 'password'
             })
             .end(function (err, res) {
-              if (err) return done(err)
+              let er = null
+              if (err) er = err
+              else {
+                res.should.have.status(200)
+                res.body.should.have.property('success').eql(false)
+                res.body.should.have.property('msg')
+                try {
+                  'null'.should.be.ok
+                } catch {
+                  if (err) er = err
 
-              res.should.have.status(200)
-              res.body.should.have.property('success').eql(false)
-              res.body.should.have.property('msg')
+                  console.log(er)
+                }
+              }
 
-              localStorage.getItem('id_token').should.be.ok
-
+              if (er) return done(err)
               done()
             })
         }
