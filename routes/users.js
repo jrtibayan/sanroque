@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
-const config = require('../config/database');
+const conf = require('config')
 const sender = require('../config/gmail');
 const nodemailer = require('nodemailer');
 
@@ -267,7 +267,7 @@ router.post(
                                     return JSON.parse(JSON.stringify(src));
                                 }
 
-                                const token = jwt.sign(convertToPlainObj(user), config.secret);
+                                const token = jwt.sign(convertToPlainObj(user), conf.secret);
 
                                 res.json({
                                     success: true,

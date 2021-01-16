@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const config = require('../config/database');
-
 
 // Doctor Schema
 const DoctorSchema = mongoose.Schema({

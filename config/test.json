@@ -1,1 +1,4 @@
-{ "DBHost": "mongodb://localhost:27017/dbsanroque_test" }
+{ 
+  "DBHost": "mongodb://localhost:27017/dbsanroque_test",
+  "secret": "yoursecret"
+}
