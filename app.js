@@ -106,7 +106,7 @@ function initializeDatabase () {
       'register director',
       'register manager',
       'register medtech',
-      'register xraytech',
+      'register radtech',
       'register cashier'
     ]
   })
@@ -117,7 +117,7 @@ function initializeDatabase () {
     name: 'manager',
     allowedActions: [
       'register medtech',
-      'register xraytech',
+      'register radtech',
       'register cashier'
     ]
   })
