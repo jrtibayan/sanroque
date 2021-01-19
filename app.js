@@ -85,7 +85,7 @@ function initializeDatabase () {
   mongoose.connection.db.dropDatabase()
 
   //  list of roles with their allowed actions
-  const Role = require('./models/role')
+  
   function registerRole (newRole) {
     newRole.save(
       (err, role) => {
@@ -99,29 +99,6 @@ function initializeDatabase () {
       }
     )
   }
-
-  let newRole = new Role({
-    name: 'admin',
-    allowedActions: [
-      'register director',
-      'register manager',
-      'register medtech',
-      'register radtech',
-      'register cashier'
-    ]
-  })
-
-  registerRole(newRole)
-
-  newRole = new Role({
-    name: 'manager',
-    allowedActions: [
-      'register medtech',
-      'register radtech',
-      'register cashier'
-    ]
-  })
-  registerRole(newRole)
 }
 
 /*

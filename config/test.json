@@ -1,4 +1,14 @@
 { 
   "DBHost": "mongodb://localhost:27017/dbsanroque_test",
-  "secret": "yoursecret"
+  "secret": "yoursecret",
+  "debug" : false,
+  "defaultAdmin": {
+    "firstname": "Jeric",
+    "lastname": "Tibayan",
+    "middlename": "Tibayan",
+    "address": "P Burgos, Lemery, Batangas",
+    "dateOfBirth": "03/11/1985",
+    "email": "jrhod_baby@yahoo.com",
+    "role": "admin"
+  }
 }
