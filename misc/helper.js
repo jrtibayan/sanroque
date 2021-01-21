@@ -27,15 +27,15 @@ exports.emailRegistrationSuccessful = function (email, password) {
     subject: 'San Roque | You are now a registered user',
     text: 'Congratulations!\n\nYou are now registered to San Roque App.\nPlease use the credentials below for your first login.\nYou may change the password anytime from your dashboard.\n\nEmail: ' + email + '\nPassword: ' + password
   }
-  h.dlog('Prepared mailOptions for mailing later')
+  this.dlog('Prepared mailOptions for mailing later')
 
-  h.dlog('Will now email user his/her new password')
+  this.dlog('Will now email user his/her new password')
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
-      h.dlog('Failed to email the user')
-      h.dlog(error)
+      this.dlog('Failed to email the user')
+      this.dlog(error)
     } else {
-      h.dlog('Email sent')
+      this.dlog('Email sent')
     }
   })
 }
