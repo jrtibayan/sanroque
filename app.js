@@ -4,13 +4,13 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const passport = require('passport')
 const mongoose = require('mongoose')
-//  const config = require('./config/database');
 const conf = require('config') //  we load the db location from the JSON files
 const morgan = require('morgan')
 
+const h = require('./misc/helper')
+
 //  Connect to database
 mongoose.connect(
-// config.database,
   conf.DBHost,
   {
     useNewUrlParser: true,
@@ -20,7 +20,7 @@ mongoose.connect(
 
 //  On Connection
 mongoose.connection.on('connected', () => {
-// console.log('Connected to database ' + conf.DBHost);
+  h.dlog('Connected to database ' + conf.DBHost)
 
   //  delete test database if we are running test
   if (conf.util.getEnv('NODE_ENV') === 'test') {
@@ -83,22 +83,6 @@ app.get('*', (req, res) => {
 
 function initializeDatabase () {
   mongoose.connection.db.dropDatabase()
-
-  //  list of roles with their allowed actions
-  
-  function registerRole (newRole) {
-    newRole.save(
-      (err, role) => {
-        if (err) {
-          console.log('Error adding role')
-          // res.json({success: false, msg: 'Error adding role'});
-        } else {
-          // console.log('Role registered');
-          // res.json({success: true, msg: 'Role added'});
-        }
-      }
-    )
-  }
 }
 
 /*

@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 
 // User Schema
-const UserSchema = mongoose.Schema({
+const PersonSchema = mongoose.Schema({
   firstname: {
     type: String,
     required: true
@@ -38,7 +38,7 @@ const UserSchema = mongoose.Schema({
   }
 })
 
-const User = module.exports = mongoose.model('User', UserSchema)
+const Person = module.exports = mongoose.model('Person', PersonSchema)
 
 module.exports.getUserById = function (id, callback) {
   User.findById(id, callback)

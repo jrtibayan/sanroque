@@ -127,6 +127,30 @@ describe('SAN ROQUE APP', function () {
       )
 
       it(
+        'it should NOT allow login if user used the wrong password',
+        function (done) {
+          chai.request(server)
+            .post('/users/authenticate')
+            .send({
+              email: 'jrhod_baby@yahoo.com',
+              password: 'password2'
+            })
+            .end(function (err, res) {
+              let er = null
+
+              if (err) er = err
+
+              res.should.have.status(200)
+              res.body.should.have.property('success').eql(false)
+              res.body.should.have.property('msg')
+
+              if (er) done(er)
+              else done()
+            })
+        }
+      )
+
+      it(
         'it should NOT allow login of unauthorized users',
         function (done) {
           chai.request(server)
@@ -179,10 +203,12 @@ describe('SAN ROQUE APP', function () {
           chai.request(server)
             .post('/users/register')
             .send({
-              firstname: 'Jeric Tibayan7',
-              lastname: 'Jeric Tibayan7',
-              email: 'jrhod_baby7@yahoo.com',
-              password: 'password7',
+              firstname: 'Jeric Tibayan8',
+              middlename: 'Padua8',
+              lastname: 'Jeric Tibayan8',
+              dateOfBirth: 'bday8',
+              email: 'jrhod_baby8@yahoo.com',
+              password: 'password8',
               role: 'director2'
             })
             .set({ Authorization: localStorage.getItem('id_token') })
@@ -238,7 +264,9 @@ describe('SAN ROQUE APP', function () {
             .post('/users/register')
             .send({
               firstname: 'Jeric Tibayan2',
+              middlename: 'Padua2',
               lastname: 'Jeric Tibayan2',
+              dateOfBirth: 'bday2',
               email: 'jrhod_baby21@yahoo.com',
               password: 'password2',
               role: 'cashier'
@@ -266,10 +294,14 @@ describe('SAN ROQUE APP', function () {
             .post('/users/register')
             .send({
               firstname: 'Jeric Tibayan3',
+              middlename: 'Padua3',
               lastname: 'Jeric Tibayan3',
+              dateOfBirth: 'bday3',
               email: 'jrhod_baby3@yahoo.com',
               password: 'password3',
-              role: 'medtech'
+              role: 'medtech',
+              license: 'medtech LICENSE',
+              signatoryName: 'signatoryName medtech'
             })
             .set({ Authorization: localStorage.getItem('id_token') })
             .end(function (err, res) {
@@ -294,10 +326,14 @@ describe('SAN ROQUE APP', function () {
             .post('/users/register')
             .send({
               firstname: 'Jeric Tibayan4',
+              middlename: 'Padua4',
               lastname: 'Jeric Tibayan4',
+              dateOfBirth: 'bday4',
               email: 'jrhod_baby4@yahoo.com',
               password: 'password4',
-              role: 'radtech'
+              role: 'radtech',
+              license: 'radtech LICENSE',
+              signatoryName: 'signatoryName radtech'
             })
             .set({ Authorization: localStorage.getItem('id_token') })
             .end(function (err, res) {
@@ -322,7 +358,9 @@ describe('SAN ROQUE APP', function () {
             .post('/users/register')
             .send({
               firstname: 'Jeric Tibayan5',
+              middlename: 'Padua5',
               lastname: 'Jeric Tibayan5',
+              dateOfBirth: 'bday5',
               email: 'jrhod_baby5@yahoo.com',
               password: 'password5',
               role: 'manager'
@@ -350,7 +388,9 @@ describe('SAN ROQUE APP', function () {
             .post('/users/register')
             .send({
               firstname: 'Jeric Tibayan6',
+              middlename: 'Padua6',
               lastname: 'Jeric Tibayan6',
+              dateOfBirth: 'bday6',
               email: 'jrhod_baby6@yahoo.com',
               password: 'password6',
               role: 'director'
@@ -378,7 +418,9 @@ describe('SAN ROQUE APP', function () {
             .post('/users/register')
             .send({
               firstname: 'Jeric Tibayan7',
+              middlename: 'Padua7',
               lastname: 'Jeric Tibayan7',
+              dateOfBirth: 'bday7',
               email: 'jrhod_baby7@yahoo.com',
               password: 'password7',
               role: 'director2'

@@ -10,28 +10,21 @@ const User = require('../models/user')
 
 function prepareNewUser (user) {
   let newPassword = null
-
   if (conf.util.getEnv('NODE_ENV') === 'test') newPassword = 'password'
   else newPassword = h.randomString(12, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
   h.dlog('Generated random password for the user')
 
-  let newUser = null
-  if (user.email === 'jrhod_baby@yahoo.com') {
-    newUser = conf.defaultAdmin
-    newUser.password = newPassword
-
-    newUser = new User(newUser)
-  } else {
-    newUser = new User({
-      firstname: user.firstname,
-      lastname: user.lastname,
-      suffix: user.suffix,
-      license: user.license,
-      email: user.email,
-      password: newPassword,
-      role: user.role
-    })
-  }
+  const newUser = new User({
+    firstname: user.firstname,
+    middlename: user.middlename,
+    lastname: user.lastname,
+    dateOfBirth: user.dateOfBirth,
+    suffix: user.suffix,
+    license: user.license,
+    email: user.email,
+    password: newPassword,
+    role: user.role
+  })
   h.dlog('Prepared newUser')
 
   return newUser
@@ -56,12 +49,12 @@ function registerUser (newUser, newPassword, res) {
       User.addUser(newUser, (err, user) => {
         if (err) {
           h.dlog('Error adding user')
-          res.json({ success: false, msg: 'Error adding user' })
+          return res.json({ success: false, msg: 'Error adding user' })
         } else {
           h.dlog('User registered')
-          res.json({ success: true, msg: 'User added' })
-
           h.emailRegistrationSuccessful(user.email, newPassword)
+
+          return res.json({ success: true, msg: 'User added' })
         }
       })
     }
@@ -80,13 +73,11 @@ router.post(
     const newUser = prepareNewUser(req.body)
 
     if (h.canAddNewRole(action, req.user.role, req.user.allowedActions, req.body.role)) {
-      registerUser(newUser, newUser.password, res)
+      return registerUser(newUser, newUser.password, res)
     } else {
       h.dlog('User not allowed to register ' + newUser.role)
-      res.json({ success: false, msg: 'User not allowed to register ' + newUser.role })
+      return res.json({ success: false, msg: 'User not allowed to register ' + newUser.role })
     }
-
-    h.dlog('Inside USER Route - REGISTER End')
   }
 )
 
@@ -94,31 +85,31 @@ router.post(
 router.post(
   '/update/password',
   (req, res, next) => {
-    // console.log('\n\n\nUpdating User Password');
+    h.dlog('\n\n\nUpdating User Password')
 
     const email = req.body.email
     const password = req.body.password
     const newPassword = req.body.newPassword
     const confirmPassword = req.body.confirmPassword
 
-    if (newPassword != confirmPassword) {
-      // console.log('New password and password confirmation does not match');
+    if (newPassword !== confirmPassword) {
+      h.dlog('New password and password confirmation does not match')
       return res.json({ success: false, msg: 'New password and password confirmation does not match' })
     }
 
     User.getUserByEmail(
       email,
       (err, user) => {
-        // console.log('Finding user with email: ' + email);
+        h.dlog('Finding user with email: ' + email)
 
         if (err) throw err
 
         if (!user) {
-          // console.log('User not found');
+          h.dlog('User not found')
           return res.json({ success: false, msg: 'User not found' })
         }
 
-        // console.log('User found');
+        h.dlog('User found')
         User.comparePassword(
           password,
           user.password,
@@ -126,7 +117,7 @@ router.post(
             if (err) throw err
 
             if (isMatch) {
-              // console.log('Password Match');
+              h.dlog('Password Match')
 
               // update the password
               User.changePassword(email, newPassword)
@@ -136,7 +127,7 @@ router.post(
                 msg: 'Password updated'
               })
             } else {
-              // console.log('Wrong password');
+              h.dlog('Wrong password')
               return res.json({ success: false, msg: 'Wrong password' })
             }
           }
@@ -160,7 +151,7 @@ router.post(
     // if no users are found, register an initial user that have a system admin role
     // that user will then be able login and use the user registration form and add new users
     if (email === 'admin' && password === 'password') {
-      // console.log('Processing special user: admin');
+      h.dlog('Processing special user: admin')
 
       const query = {} // this will get all from the collection
 
@@ -168,23 +159,21 @@ router.post(
         query,
         (err, users) => {
           if (err) {
-            // console.log('Failed to get users');
-            res.json({ success: false, msg: 'Failed to get users' })
+            h.dlog('Failed to get users')
+            return res.json({ success: false, msg: 'Failed to get users' })
+          }
+
+          if (users.length > 0) {
+            h.dlog('Users exist ' + users[0].email)
+            h.dlog('Special procedure will be cancelled')
+            return res.json({ success: false, msg: 'Can only execute this operation if the database is empty!' })
           } else {
-            if (users.length > 0) {
-              // console.log('Users exist ' + users[0].email);
-              // console.log('Special procedure will be cancelled');
-              res.json({ success: false, msg: 'Can only execute this operation if the database is empty!' })
-            } else {
-              // console.log('No user in the database');
-              // console.log('Adding default admin user');
+            h.dlog('No user in the database')
+            h.dlog('Adding default admin user')
 
-              // No user must mean the app is new so I must check important databases if it exist
+            const newUser = prepareNewUser(conf.defaultAdmin)
 
-              const newUser = prepareNewUser({ email: conf.defaultAdmin.email })
-
-              registerUser(newUser, newUser.password, res)
-            }
+            return registerUser(newUser, newUser.password, res)
           }
         }
       )
@@ -192,12 +181,12 @@ router.post(
       User.getUserByEmail(
         email,
         (err, user) => {
-          // console.log('Processing user with email: ' + email);
+          h.dlog('Processing user with email: ' + email)
 
           if (err) throw err
 
           if (!user) {
-            // console.log('User not found');
+            h.dlog('User not found')
             return res.json({ success: false, msg: 'User not found' })
           }
 
@@ -214,7 +203,7 @@ router.post(
 
                 const token = jwt.sign(convertToPlainObj(user), conf.secret)
 
-                res.json({
+                return res.json({
                   success: true,
                   msg: 'You are now logged in',
                   token: 'JWT ' + token,
@@ -243,7 +232,7 @@ router.get(
   '/profile',
   passport.authenticate('jwt', { session: false }),
   (req, res, next) => {
-    res.json({
+    return res.json({
       success: true,
       user: {
         firstname: 'Jeric',
@@ -260,7 +249,7 @@ router.post(
   '/test',
   passport.authenticate('jwt', { session: false }),
   (req, res, next) => {
-    res.json({
+    return res.json({
       success: true,
       firstname: req.user.firstname,
       lastname: req.user.lastname,

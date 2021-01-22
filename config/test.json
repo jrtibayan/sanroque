@@ -4,9 +4,8 @@
   "debug" : false,
   "defaultAdmin": {
     "firstname": "Jeric",
+    "middlename": "Padua",
     "lastname": "Tibayan",
-    "middlename": "Tibayan",
-    "address": "P Burgos, Lemery, Batangas",
     "dateOfBirth": "03/11/1985",
     "email": "jrhod_baby@yahoo.com",
     "role": "admin"
