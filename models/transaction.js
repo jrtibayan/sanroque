@@ -1,70 +1,150 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
+const bcrypt = require('bcryptjs')
 
-// Transaction Schema
+// User Schema
 const TransactionSchema = mongoose.Schema({
-    patientId: {
-        type: String,
-        required: true
-    },
-    name: {
-        type: String,
-        required: true
-    },
-    address: {
-        type: String,
-        required: true
-    },
-    date: {
-        type: String,
-        required: true
-    },
-    age: {
-        type: String,
-        required: true
-    },
-    tests: {
-        type: Array,
-        required: true
+    date
+    patientid
+    patient
+    list of test
+        testgroupid    chemgroup1          100
+        testgroupid    chemgroup2          200
+        testgroupid    chemgroup3          150
+        testgroupid    hemagroup1          1000
+        testgroupid    hemagroup2          300
+    list of payments []
+    balance 0
+
+  // ALL
+  requestDate: {
+    type: String,
+    required: true
+  },
+  // ALL
+  patient: {
+    type: String,
+    required: true
+  },
+  // ALL
+  lastname: {
+    type: String,
+    required: true
+  },
+  dateOfBirth: {
+    type: String,
+    required: true
+  },
+  contactNumber: {
+    type: String
+  },
+  // Referring, Patho, Medtech, Radtech
+  license: {
+    type: String
+  },
+  // Referring, Patho, Medtech, Radtech
+  signatoryName: {
+    type: String
+  },
+  // User (Admin, Manager, Cashier, Medtech, Radtech)
+  email: {
+    type: String
+  },
+  password: {
+    type: String
+  },
+  role: {
+    type: String
+  },
+  allowedActions: {
+    type: [String]
+  }
+})
+
+const User = module.exports = mongoose.model('User', UserSchema)
+
+module.exports.getUserById = function (id, callback) {
+  User.findById(id, callback)
+}
+
+module.exports.getUserByEmail = function (email, callback) {
+  const query = { email: email }
+  User.findOne(query, callback)
+}
+
+module.exports.getUsers = function (query, callback) {
+  User.find(query, callback)
+}
+
+module.exports.addPatient = function (newPatient, callback) {
+  // console.log('Inside User Model - ADDUSER Start');
+
+  // console.log('Will now encrypt the password');
+
+  newPatient.save(callback)  
+
+  // console.log('Inside User Model - ADDUSER End');
+}
+
+module.exports.addUser = function (newUser, callback) {
+  // console.log('Inside User Model - ADDUSER Start');
+
+  // console.log('Will now encrypt the password');
+  bcrypt.genSalt(
+    10,
+    (err, salt) => {
+      if (err) throw err
+
+      bcrypt.hash(newUser.password, salt, (err, hash) => {
+        if (err) {
+          // console.log('Password encryption failed');
+          throw err
+        }
+        newUser.password = hash
+        newUser.save(callback)
+      })
     }
-});
+  )
 
-const Transaction = module.exports = mongoose.model('Transaction', TransactionSchema);
-
-
-module.exports.getTransactionById = function(id, callback){
-    Transaction.findById(id, callback);
+  // console.log('Inside User Model - ADDUSER End');
 }
 
-module.exports.getTransactionByName = function(firstname, lastname, callback){
-    const query = {firstname: firstname, lastname: lastname};
-    Transaction.findOne(query, callback);
+module.exports.updateUser = function (query, set) {
+  options = { multi: true }
+
+  const res = User.updateOne(query, set, options, function (err) {
+    if (err) return console.error(err)
+    // console.log('User update successful');
+  })
 }
 
-module.exports.getMultipleTransactionsByName = function(firstname, lastname, callback){
-    const query = {firstname: firstname, lastname: lastname};
-    Transaction.find(query, callback);
+module.exports.comparePassword = function (candidatePassword, hash, callback) {
+  bcrypt.compare(
+    candidatePassword,
+    hash,
+    (err, isMatch) => {
+      if (err) throw err
+      callback(null, isMatch)
+    }
+  )
 }
 
-//module.exports.getTransactions = function(query, callback){
-//    Role.find(query, callback);
-//}
+module.exports.changePassword = function (email, password) {
+  bcrypt.genSalt(
+    10,
+    (err, salt) => {
+      if (err) throw err
 
-module.exports.addTransaction = function(newTransaction, callback) {
-    console.log('Inside Transaction Model - ADDTRANSACTION Start');
+      bcrypt.hash(password, salt, (err, hash) => {
+        if (err) throw err
 
-    console.log(newTransaction);
+        newPassword = hash
 
-    newTransaction.save(callback);
-    
-    console.log('Inside Transaction Model - ADDPATIENT End');
-}
+        query = { email: email }
+        update = { $set: { password: newPassword } }
 
-
-module.exports.updateTransaction = function(query, set) {
-    options = { "multi": true };
-
-    const res = Transaction.updateOne(query, set, options, function (err) {
-        if (err) return console.error(err);         
-        console.log('Transaction update successful');
-    });
+        User.updateUser(query, update)
+        // console.log('Password updated');
+      })
+    }
+  )
 }
