@@ -1,69 +1,64 @@
-const express = require('express');
-const router = express.Router();
-const passport = require('passport');
-const jwt = require('jsonwebtoken');
+const express = require('express')
+const router = express.Router()
+const passport = require('passport')
+const jwt = require('jsonwebtoken')
+const conf = require('config')
 
-const Patient = require('../models/patient');
+const h = require('../misc/helper')
 
+const User = require('../models/user')
+
+function registerUser (newUser, res) {
+  User.getUserByEmail(
+    newUser.email,
+    (err, user) => {
+      h.dlog('Finding user with email: ' + newUser.email)
+
+      if (err) throw err
+
+      if (user) {
+        h.dlog('User already exist')
+        return res.json({ success: false, msg: 'User already exist' })
+      }
+
+      h.dlog('User not found. Will add the user')
+
+      h.dlog('Forward newUser to addUser function to add the user')
+      User.addPatient(newUser, (err, user) => {
+        if (err) {
+          h.dlog('Error adding user')
+          return res.json({ success: false, msg: 'Error adding user' })
+        } else {
+          h.dlog('User registered')
+          //h.emailRegistrationSuccessful(user.email, newPassword)
+
+          return res.json({ success: true, msg: 'User added' })
+        }
+      })
+    }
+  )
+}
 
 // Register
 router.post(
-    '/register', 
-    passport.authenticate('jwt', {session: false}), 
-    (req, res, next) => {
-        let newPatient = new Patient({
-            firstname: req.body.firstname,
-            lastname: req.body.lastname,
-            address: req.body.address,
-            birthDate: req.body.birthDate
-        });
+  '/register',
+  passport.authenticate('jwt', { session: false }),
+  (req, res, next) => {
+    h.dlog('\n\n\nInside PATIENTS Route - REGISTER Start')
+    h.dlog('Adding patient ' + req.body.last + ', ' + req.body.firstname)
 
-        newPatient.birthDate = newPatient.birthDate.split('-');
-        newPatient.birthDate = new Date(newPatient.birthDate[0],newPatient.birthDate[1],newPatient.birthDate[2]);
+    const user = req.body
+    const newUser = new User({
+      firstname: user.firstname,
+      middlename: user.middlename,
+      lastname: user.lastname,
+      dateOfBirth: user.dateOfBirth,
+      email: user.email,
+      contactNumber: user.contactNumber
+    })
 
-        Patient.addPatient(newPatient, (err, patient) => {
-            if(err) {
-                res.json({success: false, msg: 'Failed to register patient'});
-            } else {
-                res.json({
-                    success: true, 
-                    msg: 'Patient registered',
-                    patient: patient
-                });
-            }
-        });
-    }
-);
+    return registerUser(newUser, res)
+  }
+)
 
-
-// Get List of Patient
-router.post(
-    '/list',
-    passport.authenticate('jwt', {session: false}), 
-    (req, res, next) => {
-        let firstname = req.body.firstname,
-            lastname = req.body.lastname;
-
-        Patient.getMultiplePatientsByName(
-            firstname,
-            lastname,
-            (err, patients) => {
-                if(err) {
-                    res.json({success: false, msg: 'Failed to get patients'});
-                } else {
-                    if(patients.length > 0) {
-                        res.json({
-                            success: true, 
-                            msg: 'Patients found',
-                            patients: patients
-                        });
-                    } else {
-                        res.json({success: false, msg: 'No patients of that name'});
-                    }
-                }
-            }
-        );        
-    }
-);
-
-module.exports = router;
+module.exports = router

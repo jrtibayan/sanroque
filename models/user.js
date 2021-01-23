@@ -22,6 +22,9 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true
   },
+  contactNumber: {
+    type: String
+  },
   // Referring, Patho, Medtech, Radtech
   license: {
     type: String
@@ -58,6 +61,16 @@ module.exports.getUserByEmail = function (email, callback) {
 
 module.exports.getUsers = function (query, callback) {
   User.find(query, callback)
+}
+
+module.exports.addPatient = function (newPatient, callback) {
+  // console.log('Inside User Model - ADDUSER Start');
+
+  // console.log('Will now encrypt the password');
+
+  newPatient.save(callback)  
+
+  // console.log('Inside User Model - ADDUSER End');
 }
 
 module.exports.addUser = function (newUser, callback) {

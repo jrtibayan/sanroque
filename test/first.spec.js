@@ -361,6 +361,7 @@ describe('SAN ROQUE APP', function () {
               middlename: 'Padua5',
               lastname: 'Jeric Tibayan5',
               dateOfBirth: 'bday5',
+              contactNumber: 'contact 0917',
               email: 'jrhod_baby5@yahoo.com',
               password: 'password5',
               role: 'manager'
@@ -442,10 +443,37 @@ describe('SAN ROQUE APP', function () {
       )
     })
 
-    describe('NOT Logged in', function () {
-      beforeEach(function () {
-        localStorage.removeItem('id_token')
-      })
+    describe('POST /patients/register', function () {
+      it(
+        'it should allow user to register new patient',
+        function (done) {
+          chai.request(server)
+            .post('/patients/register')
+            .send({
+              firstname: 'F1',
+              middlename: 'M1',
+              lastname: 'L1',
+              dateOfBirth: 'bday5',
+              email: 'jrhod_babyp1@yahoo.com',
+              contactNumber: '09173232323',
+              password: 'password',
+              role: 'manager'
+            })
+            .set({ Authorization: localStorage.getItem('id_token') })
+            .end(function (err, res) {
+              let er = null
+
+              if (err) er = err
+
+              res.should.have.status(200)
+              res.body.should.have.property('success').eql(true)
+              res.body.should.have.property('msg')
+
+              if (er) done(er)
+              else done()
+            })
+        }
+      )
     })
   })
 })

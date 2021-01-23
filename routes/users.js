@@ -19,6 +19,7 @@ function prepareNewUser (user) {
     middlename: user.middlename,
     lastname: user.lastname,
     dateOfBirth: user.dateOfBirth,
+    contactNumber: user.contactNumber,
     suffix: user.suffix,
     license: user.license,
     email: user.email,
