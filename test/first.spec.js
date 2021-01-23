@@ -226,6 +226,36 @@ describe('SAN ROQUE APP', function () {
         }
       )
     })
+
+    describe('POST /patients/register', function () {
+      it(
+        'it should not allow to register new patient',
+        function (done) {
+          chai.request(server)
+            .post('/patients/register')
+            .send({
+              firstname: 'F1',
+              middlename: 'M1',
+              lastname: 'L1',
+              dateOfBirth: 'bday5',
+              email: 'jrhod_babyp1@yahoo.com',
+              contactNumber: '09173232323'
+            })
+            .set({ Authorization: localStorage.getItem('id_token') })
+            .end(function (err, res) {
+              let er = null
+
+              if (err) er = err
+
+              res.should.have.status(401)
+              res.body.should.eql({})
+
+              if (er) done(er)
+              else done()
+            })
+        }
+      )
+    })
   })
 
   describe('Admin logged in', function () {
@@ -445,7 +475,7 @@ describe('SAN ROQUE APP', function () {
 
     describe('POST /patients/register', function () {
       it(
-        'it should allow user to register new patient',
+        'it should allow to register new patient',
         function (done) {
           chai.request(server)
             .post('/patients/register')
@@ -455,9 +485,65 @@ describe('SAN ROQUE APP', function () {
               lastname: 'L1',
               dateOfBirth: 'bday5',
               email: 'jrhod_babyp1@yahoo.com',
-              contactNumber: '09173232323',
-              password: 'password',
-              role: 'manager'
+              contactNumber: '09173232323'
+            })
+            .set({ Authorization: localStorage.getItem('id_token') })
+            .end(function (err, res) {
+              let er = null
+
+              if (err) er = err
+
+              res.should.have.status(200)
+              res.body.should.have.property('success').eql(true)
+              res.body.should.have.property('msg')
+
+              if (er) done(er)
+              else done()
+            })
+        }
+      )
+
+      it(
+        'it should not allow to register new patient if missing required info',
+        function (done) {
+          chai.request(server)
+            .post('/patients/register')
+            .send({
+              firstname: 'F1',
+              lastname: 'L1',
+              dateOfBirth: 'bday5',
+              email: 'jrhod_babyp1@yahoo.com',
+              contactNumber: '09173232323'
+            })
+            .set({ Authorization: localStorage.getItem('id_token') })
+            .end(function (err, res) {
+              let er = null
+              if (err) er = err
+
+              res.should.have.status(200)
+              res.body.should.have.property('success').eql(false)
+              res.body.should.have.property('msg')
+
+              if (er) done(er)
+              else done()
+            })
+        }
+      )
+    })
+
+    describe('POST /transactions/register', function () {
+      it(
+        'it should allow to register new patient',
+        function (done) {
+          chai.request(server)
+            .post('/patients/register')
+            .send({
+              firstname: 'F1',
+              middlename: 'M1',
+              lastname: 'L1',
+              dateOfBirth: 'bday5',
+              email: 'jrhod_babyp1@yahoo.com',
+              contactNumber: '09173232323'
             })
             .set({ Authorization: localStorage.getItem('id_token') })
             .end(function (err, res) {
