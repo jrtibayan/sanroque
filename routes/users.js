@@ -53,7 +53,10 @@ function registerUser (newUser, newPassword, res) {
           return res.json({ success: false, msg: 'Error adding user' })
         } else {
           h.dlog('User registered')
-          h.emailRegistrationSuccessful(user.email, newPassword)
+
+          if (conf.util.getEnv('NODE_ENV') !== 'test') {
+            h.emailRegistrationSuccessful(user.email, newPassword)
+          }
 
           return res.json({ success: true, msg: 'User added' })
         }
