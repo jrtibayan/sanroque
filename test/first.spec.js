@@ -490,7 +490,6 @@ describe('SAN ROQUE APP', function () {
             .set({ Authorization: localStorage.getItem('id_token') })
             .end(function (err, res) {
               let er = null
-
               if (err) er = err
 
               res.should.have.status(200)
@@ -533,24 +532,37 @@ describe('SAN ROQUE APP', function () {
 
     describe('POST /transactions/register', function () {
       it(
-        'it should allow to register new patient',
+        'it should allow to register new transaction',
         function (done) {
           chai.request(server)
-            .post('/patients/register')
+            .post('/transactions/register')
             .send({
-              firstname: 'F1',
-              middlename: 'M1',
-              lastname: 'L1',
-              dateOfBirth: 'bday5',
-              email: 'jrhod_babyp1@yahoo.com',
-              contactNumber: '09173232323'
+              requestDate: '1987-09-28',
+              patientId: 'patientid',
+              patient: 'lastname, firstname',
+              requestedTests: [
+                {
+                  testGroupid: 'chemId',
+                  chemGroupId: 'chemTestId1',
+                  price: 100
+                },
+                {
+                  testGroupid: 'chemId',
+                  chemGroupId: 'chemTestId2',
+                  price: 200
+                },
+                {
+                  testGroupid: 'hemaId',
+                  chemGroupId: 'chemaTestId1',
+                  price: 1000
+                }
+              ]
             })
             .set({ Authorization: localStorage.getItem('id_token') })
             .end(function (err, res) {
               let er = null
-
               if (err) er = err
-
+              //localStorage.setItem('patient_01', res.body.token)
               res.should.have.status(200)
               res.body.should.have.property('success').eql(true)
               res.body.should.have.property('msg')

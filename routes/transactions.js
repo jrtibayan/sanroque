@@ -4,39 +4,44 @@ const passport = require('passport')
 
 const h = require('../misc/helper')
 
-const Patient = require('../models/user')
-
-function registerUser (newUser, res) {
-  Patient.addPatient(newUser, (err, patient) => {
-    if (err) {
-      h.dlog('Error adding patient')
-      return res.json({ success: false, msg: 'Error adding patient' })
-    }
-
-    h.dlog('Patient registered')
-    return res.json({ success: true, msg: 'Patient added' })
-  })
-}
+const Transaction = require('../models/transaction')
 
 // Register
 router.post(
   '/register',
   passport.authenticate('jwt', { session: false }),
   (req, res, next) => {
-    h.dlog('\n\n\nInside PATIENTS Route - REGISTER Start')
-    h.dlog('Adding patient ' + req.body.last + ', ' + req.body.firstname)
+    h.dlog('\n\n\nInside TRANSACTIONS Route - REGISTER Start')
+    h.dlog('Adding transaction ' + req.body.patient)
 
-    const patient = req.body
-    const newUser = new Patient({
-      firstname: patient.firstname,
-      middlename: patient.middlename,
-      lastname: patient.lastname,
-      dateOfBirth: patient.dateOfBirth,
-      email: patient.email,
-      contactNumber: patient.contactNumber
+    const transaction = req.body
+    const newTransaction = new Transaction({
+      requestDate: transaction.requestDate,
+      patientId: transaction.patientId,
+      patient: transaction.patient,
+      requestedTests: transaction.requestedTests,
+      payments: [],
+      total: 0,
+      balance: 0
     })
 
-    return registerUser(newUser, res)
+    for (test in newTransaction.requestedTests) {
+      newTransaction.total += test.price
+    }
+    newTransaction.balance = newTransaction.total
+
+    newTransaction.balance = String(newTransaction.balance)
+    newTransaction.total = String(newTransaction.total)
+
+    Transaction.addTransaction(newTransaction, (err, transaction) => {
+      if (err) {
+        h.dlog('Error adding transaction')
+        return res.json({ success: false, msg: 'Error adding transaction' })
+      }
+
+      h.dlog('Transaction registered')
+      return res.json({ success: true, msg: 'Transaction added' })
+    })
   }
 )
 
