@@ -8,11 +8,11 @@ const Transaction = require('../models/transaction')
 
 // Register
 router.post(
-  '/register',
+  '/register/request',
   passport.authenticate('jwt', { session: false }),
   (req, res, next) => {
-    h.dlog('\n\n\nInside TRANSACTIONS Route - REGISTER Start')
-    h.dlog('Adding transaction ' + req.body.patient)
+    h.dlog('\n\n\nInside TRANSACTIONS Route - REGISTER Request Start')
+    h.dlog('Adding Request by ' + req.body.patient)
 
     const transaction = req.body
     const newTransaction = new Transaction({
@@ -25,9 +25,10 @@ router.post(
       balance: 0
     })
 
-    for (test in newTransaction.requestedTests) {
-      newTransaction.total += test.price
+    for (let i = 0; i < newTransaction.requestedTests.length; i++) {
+      newTransaction.total = newTransaction.total + newTransaction.requestedTests[i].price
     }
+
     newTransaction.balance = newTransaction.total
 
     newTransaction.balance = String(newTransaction.balance)
@@ -40,9 +41,13 @@ router.post(
       }
 
       h.dlog('Transaction registered')
-      return res.json({ success: true, msg: 'Transaction added' })
+      return res.json(h.appRes(
+        { success: true, msg: 'Transaction added' },
+        { id: newTransaction._id }
+      ))
     })
   }
 )
+
 
 module.exports = router

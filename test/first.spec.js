@@ -387,9 +387,9 @@ describe('SAN ROQUE APP', function () {
           chai.request(server)
             .post('/users/register')
             .send({
-              firstname: 'Jeric Tibayan5',
+              firstname: 'Jeric5',
               middlename: 'Padua5',
-              lastname: 'Jeric Tibayan5',
+              lastname: 'Tibayan5',
               dateOfBirth: 'bday5',
               contactNumber: 'contact 0917',
               email: 'jrhod_baby5@yahoo.com',
@@ -407,7 +407,11 @@ describe('SAN ROQUE APP', function () {
               res.body.should.have.property('msg')
 
               if (er) done(er)
-              else done()
+
+              localStorage.setItem('patient01_id', res.body.testOnly.id)
+              localStorage.setItem('patient01_fullname', res.body.testOnly.fullname)
+
+              done()
             })
         }
       )
@@ -497,7 +501,11 @@ describe('SAN ROQUE APP', function () {
               res.body.should.have.property('msg')
 
               if (er) done(er)
-              else done()
+
+              localStorage.setItem('patient02_id', res.body.testOnly.id)
+              localStorage.setItem('patient02_fullname', res.body.testOnly.fullname)
+
+              done()
             })
         }
       )
@@ -535,11 +543,11 @@ describe('SAN ROQUE APP', function () {
         'it should allow to register new transaction',
         function (done) {
           chai.request(server)
-            .post('/transactions/register')
+            .post('/transactions/register/request')
             .send({
               requestDate: '1987-09-28',
-              patientId: 'patientid',
-              patient: 'lastname, firstname',
+              patientId: localStorage.getItem('patient02_id'),
+              patient: localStorage.getItem('patient02_fullname'),
               requestedTests: [
                 {
                   testGroupid: 'chemId',
@@ -562,13 +570,56 @@ describe('SAN ROQUE APP', function () {
             .end(function (err, res) {
               let er = null
               if (err) er = err
-              //localStorage.setItem('patient_01', res.body.token)
+
               res.should.have.status(200)
               res.body.should.have.property('success').eql(true)
               res.body.should.have.property('msg')
 
               if (er) done(er)
-              else done()
+
+              localStorage.setItem('testRequestId_01', res.body.testOnly.id)
+
+              done()
+            })
+        }
+      )
+
+      it(
+        'it should allow to register new transaction2',
+        function (done) {
+          chai.request(server)
+            .post('/transactions/register/request')
+            .send({
+              requestDate: '1985-03-11',
+              patientId: localStorage.getItem('patient01_id'),
+              patient: localStorage.getItem('patient01_fullname'),
+              requestedTests: [
+                {
+                  testGroupid: 'chemId',
+                  chemGroupId: 'chemTestId3',
+                  price: 400
+                },
+                {
+                  testGroupid: 'hemaId',
+                  chemGroupId: 'chemaTestId2',
+                  price: 4000
+                }
+              ]
+            })
+            .set({ Authorization: localStorage.getItem('id_token') })
+            .end(function (err, res) {
+              let er = null
+              if (err) er = err
+
+              res.should.have.status(200)
+              res.body.should.have.property('success').eql(true)
+              res.body.should.have.property('msg')
+
+              if (er) done(er)
+
+              localStorage.setItem('testRequestId_02', res.body.testOnly.id)
+
+              done()
             })
         }
       )

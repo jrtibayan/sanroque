@@ -58,7 +58,10 @@ function registerUser (newUser, newPassword, res) {
             h.emailRegistrationSuccessful(user.email, newPassword)
           }
 
-          return res.json({ success: true, msg: 'User added' })
+          return res.json(h.appRes(
+            { success: true, msg: 'User added' },
+            { id: newUser._id, fullname: newUser.lastname + ', ' + newUser.firstname}
+          ))
         }
       })
     }
@@ -244,21 +247,6 @@ router.get(
         email: 'jrhod_baby@yahoo.com',
         role: 'admin'
       }
-    })
-  }
-)
-
-// testing
-router.post(
-  '/test',
-  passport.authenticate('jwt', { session: false }),
-  (req, res, next) => {
-    return res.json({
-      success: true,
-      firstname: req.user.firstname,
-      lastname: req.user.lastname,
-      email: req.user.email,
-      friends: req.user.friends
     })
   }
 )

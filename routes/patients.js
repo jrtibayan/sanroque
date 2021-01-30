@@ -6,18 +6,6 @@ const h = require('../misc/helper')
 
 const Patient = require('../models/user')
 
-function registerUser (newUser, res) {
-  Patient.addPatient(newUser, (err, patient) => {
-    if (err) {
-      h.dlog('Error adding patient')
-      return res.json({ success: false, msg: 'Error adding patient' })
-    }
-
-    h.dlog('Patient registered')
-    return res.json({ success: true, msg: 'Patient added' })
-  })
-}
-
 // Register
 router.post(
   '/register',
@@ -36,7 +24,18 @@ router.post(
       contactNumber: patient.contactNumber
     })
 
-    return registerUser(newUser, res)
+    Patient.addPatient(newUser, (err, patient) => {
+      if (err) {
+        h.dlog('Error adding patient')
+        return res.json({ success: false, msg: 'Error adding patient' })
+      }
+
+      h.dlog('Patient registered')
+      return res.json(h.appRes(
+        { success: true, msg: 'Patient added' },
+        { id: newUser._id, fullname: newUser.lastname + ', ' + newUser.firstname}
+      ))
+    })
   }
 )
 

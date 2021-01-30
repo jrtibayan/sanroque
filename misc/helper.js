@@ -61,3 +61,11 @@ exports.canAddNewRole = function (action, loggedUserRole, loggedUserAllowedActio
 
   return false
 }
+
+// result is the actual response to be returned
+// and testProps are additional properties if ever it is only running a test
+exports.appRes = function (result, testProps) {
+  if (conf.util.getEnv('NODE_ENV') === 'test') result.testOnly = testProps
+
+  return result
+}
