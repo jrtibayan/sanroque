@@ -49,5 +49,41 @@ router.post(
   }
 )
 
+// Register
+router.post(
+  '/register/payment',
+  passport.authenticate('jwt', { session: false }),
+  (req, res, next) => {
+    const requestId = req.body.requestId
+    const paymentDate = req.body.paymentDate
+    const paymentAmount = req.body.amount
+
+    h.dlog('\n\n\nInside TRANSACTIONS Route - REGISTER Payment Start')
+    h.dlog('Adding Payment for Test Request ID ' + requestId)
+
+    Transaction.getTransactionById(
+      requestId,
+      (err, request) => {
+        if (err) {
+          h.dlog('Failed to find test request')
+          return res.json({ success: false, msg: 'Failed to find test request' })
+        }
+
+        request.payments.push({ pDate: paymentDate, pAmount: paymentAmount })
+        request.balance = request.balance - paymentAmount
+
+        Transaction.updatePayments(
+          requestId,
+          {
+            payments: request.payments,
+            balance: request.balance
+          }
+        )
+
+        return res.json({ success: true, msg: 'Transaction added' })
+      }
+    )
+  }
+)
 
 module.exports = router

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const bcrypt = require('bcryptjs')
 
 // Transaction Schema
 const TransactionSchema = mongoose.Schema({
@@ -36,7 +35,7 @@ const TransactionSchema = mongoose.Schema({
     required: true
   },
   payments: {
-    type: [Number],
+    type: [{}],
     required: true
   },
   total: {
@@ -55,31 +54,6 @@ module.exports.getTransactionById = function (id, callback) {
   Transaction.findById(id, callback)
 }
 
-module.exports.getTransactionByDate = function (tDates, callback) {
-  // const start = tDates.start
-  // const end = tDates.end
-
-  // convert 
-
-  const query = { email: email }
-
-  Transaction.findOne(query, callback)
-}
-
-module.exports.getTransactions = function (query, callback) {
-  Transaction.find(query, callback)
-}
-
-module.exports.addPatient = function (newPatient, callback) {
-  // console.log('Inside Transaction Model - ADDUSER Start');
-
-  // console.log('Will now encrypt the password');
-
-  newPatient.save(callback)
-
-  // console.log('Inside Transaction Model - ADDUSER End');
-}
-
 module.exports.addTransaction = function (newTransaction, callback) {
   // console.log('Inside Transaction Model - ADDUSER Start');
 
@@ -93,40 +67,15 @@ module.exports.addTransaction = function (newTransaction, callback) {
 module.exports.updateTransaction = function (query, set) {
   options = { multi: true }
 
-  const res = Transaction.updateOne(query, set, options, function (err) {
+  Transaction.updateOne(query, set, options, function (err) {
     if (err) return console.error(err)
-    // console.log('Transaction update successful');
+    // console.log('Transaction update successful')
   })
 }
 
-module.exports.comparePassword = function (candidatePassword, hash, callback) {
-  bcrypt.compare(
-    candidatePassword,
-    hash,
-    (err, isMatch) => {
-      if (err) throw err
-      callback(null, isMatch)
-    }
-  )
-}
+module.exports.updatePayments = function (requestId, changes) {
+  query = { _id: requestId }
+  update = { $set: changes }
 
-module.exports.changePassword = function (email, password) {
-  bcrypt.genSalt(
-    10,
-    (err, salt) => {
-      if (err) throw err
-
-      bcrypt.hash(password, salt, (err, hash) => {
-        if (err) throw err
-
-        newPassword = hash
-
-        query = { email: email }
-        update = { $set: { password: newPassword } }
-
-        Transaction.updateTransaction(query, update)
-        // console.log('Password updated');
-      })
-    }
-  )
+  Transaction.updateTransaction(query, update)
 }

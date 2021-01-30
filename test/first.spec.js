@@ -624,5 +624,85 @@ describe('SAN ROQUE APP', function () {
         }
       )
     })
+
+    describe('POST /transactions/register/payment', function () {
+      it(
+        'it should allow payment to be added to request1',
+        function (done) {
+          chai.request(server)
+            .post('/transactions/register/payment')
+            .send({
+              requestId: localStorage.getItem('testRequestId_01'),
+              paymentDate: '1985-03-11',
+              amount: 1300
+            })
+            .set({ Authorization: localStorage.getItem('id_token') })
+            .end(function (err, res) {
+              let er = null
+              if (err) er = err
+
+              res.should.have.status(200)
+              res.body.should.have.property('success').eql(true)
+              res.body.should.have.property('msg')
+
+              if (er) done(er)
+
+              done()
+            })
+        }
+      )
+
+      it(
+        'it should allow payment to be added to request2',
+        function (done) {
+          chai.request(server)
+            .post('/transactions/register/payment')
+            .send({
+              requestId: localStorage.getItem('testRequestId_02'),
+              paymentDate: '1985-03-11',
+              amount: 1000
+            })
+            .set({ Authorization: localStorage.getItem('id_token') })
+            .end(function (err, res) {
+              let er = null
+              if (err) er = err
+
+              res.should.have.status(200)
+              res.body.should.have.property('success').eql(true)
+              res.body.should.have.property('msg')
+
+              if (er) done(er)
+
+              done()
+            })
+        }
+      )
+
+      it(
+        'it should NOT allow payment to be added if ID is NOT found',
+        function (done) {
+          chai.request(server)
+            .post('/transactions/register/payment')
+            .send({
+              requestId: localStorage.getItem('testRequestId_02') + 'XXXX',
+              paymentDate: '1985-03-11',
+              amount: 1300
+            })
+            .set({ Authorization: localStorage.getItem('id_token') })
+            .end(function (err, res) {
+              let er = null
+              if (err) er = err
+
+              res.should.have.status(200)
+              res.body.should.have.property('success').eql(false)
+              res.body.should.have.property('msg')
+
+              if (er) done(er)
+
+              done()
+            })
+        }
+      )
+    })
   })
 })
