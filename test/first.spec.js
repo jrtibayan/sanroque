@@ -561,7 +561,7 @@ describe('SAN ROQUE APP', function () {
                 },
                 {
                   testGroupid: 'hemaId',
-                  chemGroupId: 'chemaTestId1',
+                  chemGroupId: 'hemaTestId1',
                   price: 1000
                 }
               ]
@@ -601,7 +601,7 @@ describe('SAN ROQUE APP', function () {
                 },
                 {
                   testGroupid: 'hemaId',
-                  chemGroupId: 'chemaTestId2',
+                  chemGroupId: 'hemaTestId2',
                   price: 4000
                 }
               ]
@@ -634,7 +634,12 @@ describe('SAN ROQUE APP', function () {
             .send({
               requestId: localStorage.getItem('testRequestId_01'),
               paymentDate: '1985-03-11',
-              amount: 1300
+              amount: 1300,
+              appliedPayment: [
+                { chemGroupId: 'chemTestId1', amount: 100 },
+                { chemGroupId: 'chemTestId2', amount: 200 },
+                { chemGroupId: 'hemaTestId1', amount: 1000 }
+              ]
             })
             .set({ Authorization: localStorage.getItem('id_token') })
             .end(function (err, res) {
@@ -660,7 +665,40 @@ describe('SAN ROQUE APP', function () {
             .send({
               requestId: localStorage.getItem('testRequestId_02'),
               paymentDate: '1985-03-11',
-              amount: 1000
+              amount: 1000,
+              appliedPayment: [
+                { chemGroupId: 'chemTestId3', amount: 400 },
+                { chemGroupId: 'hemaTestId2', amount: 600 }
+              ]
+            })
+            .set({ Authorization: localStorage.getItem('id_token') })
+            .end(function (err, res) {
+              let er = null
+              if (err) er = err
+
+              res.should.have.status(200)
+              res.body.should.have.property('success').eql(true)
+              res.body.should.have.property('msg')
+
+              if (er) done(er)
+
+              done()
+            })
+        }
+      )
+
+      it(
+        'it should allow additional payment to be added to request2',
+        function (done) {
+          chai.request(server)
+            .post('/transactions/register/payment')
+            .send({
+              requestId: localStorage.getItem('testRequestId_02'),
+              paymentDate: '1985-04-11',
+              amount: 1300,
+              appliedPayment: [
+                { chemGroupId: 'hemaTestId2', amount: 1300 }
+              ]
             })
             .set({ Authorization: localStorage.getItem('id_token') })
             .end(function (err, res) {

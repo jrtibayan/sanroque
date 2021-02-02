@@ -57,26 +57,44 @@ router.post(
     const requestId = req.body.requestId
     const paymentDate = req.body.paymentDate
     const paymentAmount = req.body.amount
+    const paymentToApply = req.body.appliedPayment
 
     h.dlog('\n\n\nInside TRANSACTIONS Route - REGISTER Payment Start')
     h.dlog('Adding Payment for Test Request ID ' + requestId)
 
     Transaction.getTransactionById(
       requestId,
-      (err, request) => {
+      (err, trans) => {
         if (err) {
           h.dlog('Failed to find test request')
           return res.json({ success: false, msg: 'Failed to find test request' })
         }
 
-        request.payments.push({ pDate: paymentDate, pAmount: paymentAmount })
-        request.balance = request.balance - paymentAmount
+        trans.payments.push({ pDate: paymentDate, pAmount: paymentAmount })
+        trans.balance = trans.balance - paymentAmount
+
+        if (paymentToApply) {
+          for (let i = 0; i < paymentToApply.length; i++) {
+            paymentToApply[i].amount
+            for (let i2 = 0; i2 < trans.requestedTests.length; i2++) {
+              if (trans.requestedTests[i2].chemGroupId === paymentToApply[i].chemGroupId) {
+                if (trans.requestedTests[i2].paid === null || trans.requestedTests[i2].paid === undefined) {
+                  trans.requestedTests[i2].paid = paymentToApply[i].amount
+                } else {
+                  trans.requestedTests[i2].paid += paymentToApply[i].amount
+                }
+                break
+              }
+            }
+          }
+        }
 
         Transaction.updatePayments(
           requestId,
           {
-            payments: request.payments,
-            balance: request.balance
+            requestedTests: trans.requestedTests,
+            payments: trans.payments,
+            balance: trans.balance
           }
         )
 
