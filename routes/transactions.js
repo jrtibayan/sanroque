@@ -56,7 +56,7 @@ router.post(
   (req, res, next) => {
     const requestId = req.body.requestId
     const paymentDate = req.body.paymentDate
-    const paymentAmount = req.body.amount
+    let paymentAmount = 0
     const paymentToApply = req.body.appliedPayment
 
     h.dlog('\n\n\nInside TRANSACTIONS Route - REGISTER Payment Start')
@@ -70,24 +70,32 @@ router.post(
           return res.json({ success: false, msg: 'Failed to find test request' })
         }
 
-        trans.payments.push({ pDate: paymentDate, pAmount: paymentAmount })
-        trans.balance = trans.balance - paymentAmount
-
         if (paymentToApply) {
           for (let i = 0; i < paymentToApply.length; i++) {
-            paymentToApply[i].amount
-            for (let i2 = 0; i2 < trans.requestedTests.length; i2++) {
-              if (trans.requestedTests[i2].chemGroupId === paymentToApply[i].chemGroupId) {
-                if (trans.requestedTests[i2].paid === null || trans.requestedTests[i2].paid === undefined) {
-                  trans.requestedTests[i2].paid = paymentToApply[i].amount
-                } else {
-                  trans.requestedTests[i2].paid += paymentToApply[i].amount
-                }
+            paymentAmount += paymentToApply[i].amount
+
+            let foundIndex = -1
+            for (let x = 0; x < trans.requestedTests.length; x++) {
+              if (trans.requestedTests[x].chemGroupId === paymentToApply[i].chemGroupId) {
+                foundIndex = x
                 break
               }
             }
+
+            if (foundIndex > -1) {
+              if (trans.requestedTests[foundIndex].paid === null || trans.requestedTests[foundIndex].paid === undefined) {
+                trans.requestedTests[foundIndex].paid = paymentToApply[i].amount
+              } else {
+                trans.requestedTests[foundIndex].paid += paymentToApply[i].amount
+              }
+            } else {
+              return res.json({ success: false, msg: 'Failed to find one of the tests to apply payment on' })
+            }
           }
         }
+
+        trans.payments.push({ pDate: paymentDate, pAmount: paymentAmount })
+        trans.balance = trans.balance - paymentAmount
 
         Transaction.updatePayments(
           requestId,
