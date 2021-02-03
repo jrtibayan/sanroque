@@ -768,6 +768,32 @@ describe('SAN ROQUE APP', function () {
             })
         }
       )
+
+      it(
+        'it should NOT allow payment to be added if one of the test to be applied is not on requests',
+        function (done) {
+          chai.request(server)
+            .post('/transactions/register/discount')
+            .send({
+              requestId: localStorage.getItem('testRequestId_02'),
+              discountDate: '1985-05-11',
+              amount: '1300'
+            })
+            .set({ Authorization: localStorage.getItem('id_token') })
+            .end(function (err, res) {
+              let er = null
+              if (err) er = err
+
+              res.should.have.status(200)
+              res.body.should.have.property('success').eql(false)
+              res.body.should.have.property('msg')
+
+              if (er) done(er)
+
+              done()
+            })
+        }
+      )
     })
   })
 })
