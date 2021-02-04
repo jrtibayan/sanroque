@@ -22,6 +22,7 @@ router.post(
       requestedTests: transaction.requestedTests,
       payments: [],
       total: 0,
+      discount: 0,
       balance: 0
     })
 
@@ -119,25 +120,10 @@ router.post(
   (req, res, next) => {
     const requestId = req.body.requestId
     const discountDate = req.body.discountDate
-    const discountAmount = req.body.amount.trim()
+    const discountInput = req.body.amount.replace(/\s+/g, '')
 
-    console.log(/^[0-9]*$/.test('20'))
-    console.log(/^[0-9]*$/.test('20%'))
-    console.log(/^[0-9]*$/.test('20 3123'))
-    console.log(/^[0-9]*$/.test('20,342'))
-    console.log(/^[0-9]*$/.test('20.342'))
-
-// use this for percentage --> \\d+(?:\\.\\d+)?%
-
-    if (/\d+%/.test(discountAmount)) {
-console.log('------------>discount is percent')
-    } else if(/^[0-9]*$/.test(discountAmount)) {
-console.log('------------>discount is number')
-    } else {
-console.log('------------>discount is INVALID')
-      return res.json({ success: false, msg: 'Invalid amount. Format accepted are (Numbers only [1000] or pergentage [5%])' })
-    }
-return res.json({ success: true, msg: 'Invalid amount. Format accepted are (Numbers only [1000] or pergentage [5%])' })
+    let discountPercent = null
+    let discountAmount = null
 
     h.dlog('\n\n\nInside TRANSACTIONS Route - REGISTER Discount Start')
     h.dlog('Adding Discount for Test Request ID ' + requestId)
@@ -150,38 +136,42 @@ return res.json({ success: true, msg: 'Invalid amount. Format accepted are (Numb
           return res.json({ success: false, msg: 'Failed to find test request' })
         }
 
-        if (paymentToApply) {
-          for (let i = 0; i < paymentToApply.length; i++) {
-            paymentAmount += paymentToApply[i].amount
-
-            let foundIndex = -1
-            for (let x = 0; x < trans.requestedTests.length; x++) {
-              if (trans.requestedTests[x].chemGroupId === paymentToApply[i].chemGroupId) {
-                foundIndex = x
-                break
-              }
-            }
-
-            if (foundIndex > -1) {
-              if (trans.requestedTests[foundIndex].paid === null || trans.requestedTests[foundIndex].paid === undefined) {
-                trans.requestedTests[foundIndex].paid = paymentToApply[i].amount
-              } else {
-                trans.requestedTests[foundIndex].paid += paymentToApply[i].amount
-              }
-            } else {
-              return res.json({ success: false, msg: 'Failed to find one of the tests to apply payment on' })
-            }
-          }
+        if (/\d+%/.test(discountInput)) { // PERCENTAGE
+          discountPercent = 0.01 * parseFloat(discountInput.replace('%', ''))
+          discountAmount = Math.ceil(discountPercent * trans.total)
+        } else if (/^[0-9]*$/.test(discountInput)) { // NUMBER
+          discountAmount = Math.ceil(discountInput)
+        } else { // INVALID
+          return res.json({ success: false, msg: 'Invalid amount. Format accepted are (Numbers only [1000] or pergentage [5%])' })
         }
 
-        trans.payments.push({ pDate: paymentDate, pAmount: paymentAmount })
-        trans.balance = trans.balance - paymentAmount
+        let discountLeft = discountAmount
+        for (let i = 0, amountToDiscount = 0; i < trans.requestedTests.length; i++) {
+          if (i === trans.requestedTests.length - 1) {
+            amountToDiscount = discountLeft
+          } else {
+            amountToDiscount = ((((trans.requestedTests[i].price * 100) / trans.total) * 0.01) * discountAmount)
+            amountToDiscount = Math.round((amountToDiscount + Number.EPSILON) * 100) / 100
+          }
+          trans.requestedTests[i].discount = amountToDiscount
+          discountLeft -= amountToDiscount
+        }
+
+        if (trans.discount > 0) {
+          return res.json({ success: false, msg: 'A discount has already been applied to this transaction' })
+        }
+
+        if (discountAmount <= 0 || discountAmount > trans.balance) {
+          return res.json({ success: false, msg: 'Invalid amount. Amount must be greater than Zero and less than or equal to the payable amount' })
+        }
+
+        trans.balance = trans.balance - discountAmount
 
         Transaction.updatePayments(
           requestId,
           {
             requestedTests: trans.requestedTests,
-            payments: trans.payments,
+            discount: discountAmount,
             balance: trans.balance
           }
         )
@@ -191,6 +181,5 @@ return res.json({ success: true, msg: 'Invalid amount. Format accepted are (Numb
     )
   }
 )
-
 
 module.exports = router

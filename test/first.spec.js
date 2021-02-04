@@ -623,6 +623,46 @@ describe('SAN ROQUE APP', function () {
             })
         }
       )
+
+      it(
+        'it should allow to register new transaction2',
+        function (done) {
+          chai.request(server)
+            .post('/transactions/register/request')
+            .send({
+              requestDate: '1985-03-11',
+              patientId: localStorage.getItem('patient01_id'),
+              patient: localStorage.getItem('patient01_fullname'),
+              requestedTests: [
+                {
+                  testGroupid: 'chemId',
+                  chemGroupId: 'chemTestId3',
+                  price: 400
+                },
+                {
+                  testGroupid: 'hemaId',
+                  chemGroupId: 'hemaTestId2',
+                  price: 4000
+                }
+              ]
+            })
+            .set({ Authorization: localStorage.getItem('id_token') })
+            .end(function (err, res) {
+              let er = null
+              if (err) er = err
+
+              res.should.have.status(200)
+              res.body.should.have.property('success').eql(true)
+              res.body.should.have.property('msg')
+
+              if (er) done(er)
+
+              localStorage.setItem('testRequestId_03', res.body.testOnly.id)
+
+              done()
+            })
+        }
+      )
     })
 
     describe('POST /transactions/register/payment', function () {
@@ -770,14 +810,40 @@ describe('SAN ROQUE APP', function () {
       )
 
       it(
-        'it should NOT allow payment to be added if one of the test to be applied is not on requests',
+        'it should allow discount to be added using percentage',
         function (done) {
           chai.request(server)
             .post('/transactions/register/discount')
             .send({
               requestId: localStorage.getItem('testRequestId_02'),
               discountDate: '1985-05-11',
-              amount: '1300'
+              amount: '20.1%'
+            })
+            .set({ Authorization: localStorage.getItem('id_token') })
+            .end(function (err, res) {
+              let er = null
+              if (err) er = err
+
+              res.should.have.status(200)
+              res.body.should.have.property('success').eql(true)
+              res.body.should.have.property('msg')
+
+              if (er) done(er)
+
+              done()
+            })
+        }
+      )
+
+      it(
+        'it should NOT allow discount to be added if there is already a discount',
+        function (done) {
+          chai.request(server)
+            .post('/transactions/register/discount')
+            .send({
+              requestId: localStorage.getItem('testRequestId_02'),
+              discountDate: '1985-05-11',
+              amount: '10.1%'
             })
             .set({ Authorization: localStorage.getItem('id_token') })
             .end(function (err, res) {
@@ -786,6 +852,32 @@ describe('SAN ROQUE APP', function () {
 
               res.should.have.status(200)
               res.body.should.have.property('success').eql(false)
+              res.body.should.have.property('msg')
+
+              if (er) done(er)
+
+              done()
+            })
+        }
+      )
+
+      it(
+        'it should allow discount to be added using given amount',
+        function (done) {
+          chai.request(server)
+            .post('/transactions/register/discount')
+            .send({
+              requestId: localStorage.getItem('testRequestId_03'),
+              discountDate: '1985-05-11',
+              amount: '678'
+            })
+            .set({ Authorization: localStorage.getItem('id_token') })
+            .end(function (err, res) {
+              let er = null
+              if (err) er = err
+
+              res.should.have.status(200)
+              res.body.should.have.property('success').eql(true)
               res.body.should.have.property('msg')
 
               if (er) done(er)

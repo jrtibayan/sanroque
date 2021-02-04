@@ -45,6 +45,10 @@ const TransactionSchema = mongoose.Schema({
   balance: {
     type: Number,
     required: true
+  },
+  discount: {
+    type: Number,
+    required: true
   }
 })
 
