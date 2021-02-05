@@ -28,6 +28,7 @@ router.post(
 
     for (let i = 0; i < newTransaction.requestedTests.length; i++) {
       newTransaction.total = newTransaction.total + newTransaction.requestedTests[i].price
+      newTransaction.requestedTests[i].paid = 0
     }
 
     newTransaction.balance = newTransaction.total
@@ -77,7 +78,7 @@ router.post(
 
             let foundIndex = -1
             for (let x = 0; x < trans.requestedTests.length; x++) {
-              if (trans.requestedTests[x].chemGroupId === paymentToApply[i].chemGroupId) {
+              if (trans.requestedTests[x].testGroupId === paymentToApply[i].testGroupId) {
                 foundIndex = x
                 break
               }
@@ -136,6 +137,14 @@ router.post(
           return res.json({ success: false, msg: 'Failed to find test request' })
         }
 
+        if (trans.discount > 0) {
+          return res.json({ success: false, msg: 'A discount has already been applied to this transaction' })
+        }
+
+        if (trans.total !== trans.balance) {
+          return res.json({ success: false, msg: 'Discount can only be applied for transactions without recorded payment' })
+        }
+
         if (/\d+%/.test(discountInput)) { // PERCENTAGE
           discountPercent = 0.01 * parseFloat(discountInput.replace('%', ''))
           discountAmount = Math.ceil(discountPercent * trans.total)
@@ -155,10 +164,6 @@ router.post(
           }
           trans.requestedTests[i].discount = amountToDiscount
           discountLeft -= amountToDiscount
-        }
-
-        if (trans.discount > 0) {
-          return res.json({ success: false, msg: 'A discount has already been applied to this transaction' })
         }
 
         if (discountAmount <= 0 || discountAmount > trans.balance) {

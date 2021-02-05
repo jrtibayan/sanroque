@@ -1,3 +1,23 @@
+1. create schema for results = collection of results
+2. each test group will be a document
+
+// since we can add transaction, discount and payment,
+        we can now start with inputing for the report
+
+/cannot add discount if payment is already applied
+/cannot add discount if discount already applied
+
+
+
+
+
+
+
+
+
+
+
+
 Users
     LabTech
     XrayTech

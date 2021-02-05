@@ -550,18 +550,18 @@ describe('SAN ROQUE APP', function () {
               patient: localStorage.getItem('patient02_fullname'),
               requestedTests: [
                 {
-                  testGroupid: 'chemId',
-                  chemGroupId: 'chemTestId1',
+                  testCategoryId: 'chemId',
+                  testGroupId: 'chemTestId1',
                   price: 100
                 },
                 {
-                  testGroupid: 'chemId',
-                  chemGroupId: 'chemTestId2',
+                  testCategoryId: 'chemId',
+                  testGroupId: 'chemTestId2',
                   price: 200
                 },
                 {
-                  testGroupid: 'hemaId',
-                  chemGroupId: 'hemaTestId1',
+                  testCategoryId: 'hemaId',
+                  testGroupId: 'hemaTestId1',
                   price: 1000
                 }
               ]
@@ -595,13 +595,13 @@ describe('SAN ROQUE APP', function () {
               patient: localStorage.getItem('patient01_fullname'),
               requestedTests: [
                 {
-                  testGroupid: 'chemId',
-                  chemGroupId: 'chemTestId3',
+                  testCategoryId: 'chemId',
+                  testGroupId: 'chemTestId3',
                   price: 400
                 },
                 {
-                  testGroupid: 'hemaId',
-                  chemGroupId: 'hemaTestId2',
+                  testCategoryId: 'hemaId',
+                  testGroupId: 'hemaTestId2',
                   price: 4000
                 }
               ]
@@ -625,7 +625,7 @@ describe('SAN ROQUE APP', function () {
       )
 
       it(
-        'it should allow to register new transaction2',
+        'it should allow to register new transaction3',
         function (done) {
           chai.request(server)
             .post('/transactions/register/request')
@@ -635,13 +635,13 @@ describe('SAN ROQUE APP', function () {
               patient: localStorage.getItem('patient01_fullname'),
               requestedTests: [
                 {
-                  testGroupid: 'chemId',
-                  chemGroupId: 'chemTestId3',
+                  testCategoryId: 'chemId',
+                  testGroupId: 'chemTestId3',
                   price: 400
                 },
                 {
-                  testGroupid: 'hemaId',
-                  chemGroupId: 'hemaTestId2',
+                  testCategoryId: 'hemaId',
+                  testGroupId: 'hemaTestId2',
                   price: 4000
                 }
               ]
@@ -663,6 +663,46 @@ describe('SAN ROQUE APP', function () {
             })
         }
       )
+
+      it(
+        'it should allow to register new transaction4',
+        function (done) {
+          chai.request(server)
+            .post('/transactions/register/request')
+            .send({
+              requestDate: '1985-08-11',
+              patientId: localStorage.getItem('patient01_id'),
+              patient: localStorage.getItem('patient01_fullname'),
+              requestedTests: [
+                {
+                  testCategoryId: 'chemId',
+                  testGroupId: 'chemTestId3',
+                  price: 400
+                },
+                {
+                  testCategoryId: 'hemaId',
+                  testGroupId: 'hemaTestId2',
+                  price: 4000
+                }
+              ]
+            })
+            .set({ Authorization: localStorage.getItem('id_token') })
+            .end(function (err, res) {
+              let er = null
+              if (err) er = err
+
+              res.should.have.status(200)
+              res.body.should.have.property('success').eql(true)
+              res.body.should.have.property('msg')
+
+              if (er) done(er)
+
+              localStorage.setItem('testRequestId_04', res.body.testOnly.id)
+
+              done()
+            })
+        }
+      )
     })
 
     describe('POST /transactions/register/payment', function () {
@@ -675,9 +715,9 @@ describe('SAN ROQUE APP', function () {
               requestId: localStorage.getItem('testRequestId_01'),
               paymentDate: '1985-03-11',
               appliedPayment: [
-                { chemGroupId: 'chemTestId1', amount: 100 },
-                { chemGroupId: 'chemTestId2', amount: 200 },
-                { chemGroupId: 'hemaTestId1', amount: 1000 }
+                { testGroupId: 'chemTestId1', amount: 100 },
+                { testGroupId: 'chemTestId2', amount: 200 },
+                { testGroupId: 'hemaTestId1', amount: 1000 }
               ]
             })
             .set({ Authorization: localStorage.getItem('id_token') })
@@ -705,8 +745,8 @@ describe('SAN ROQUE APP', function () {
               requestId: localStorage.getItem('testRequestId_02'),
               paymentDate: '1985-03-11',
               appliedPayment: [
-                { chemGroupId: 'chemTestId3', amount: 400 },
-                { chemGroupId: 'hemaTestId2', amount: 600 }
+                { testGroupId: 'chemTestId3', amount: 400 },
+                { testGroupId: 'hemaTestId2', amount: 600 }
               ]
             })
             .set({ Authorization: localStorage.getItem('id_token') })
@@ -734,7 +774,7 @@ describe('SAN ROQUE APP', function () {
               requestId: localStorage.getItem('testRequestId_02'),
               paymentDate: '1985-04-11',
               appliedPayment: [
-                { chemGroupId: 'hemaTestId2', amount: 1300 }
+                { testGroupId: 'hemaTestId2', amount: 1300 }
               ]
             })
             .set({ Authorization: localStorage.getItem('id_token') })
@@ -762,7 +802,7 @@ describe('SAN ROQUE APP', function () {
               requestId: localStorage.getItem('testRequestId_02') + 'XXXX',
               paymentDate: '1985-05-11',
               appliedPayment: [
-                { chemGroupId: 'hemaTestId2', amount: 1300 }
+                { testGroupId: 'hemaTestId2', amount: 1300 }
               ]
             })
             .set({ Authorization: localStorage.getItem('id_token') })
@@ -790,8 +830,34 @@ describe('SAN ROQUE APP', function () {
               requestId: localStorage.getItem('testRequestId_02'),
               paymentDate: '1985-05-11',
               appliedPayment: [
-                { chemGroupId: 'hemaTestId2XXXXXX', amount: 1300 }
+                { testGroupId: 'hemaTestId2XXXXXX', amount: 1300 }
               ]
+            })
+            .set({ Authorization: localStorage.getItem('id_token') })
+            .end(function (err, res) {
+              let er = null
+              if (err) er = err
+
+              res.should.have.status(200)
+              res.body.should.have.property('success').eql(false)
+              res.body.should.have.property('msg')
+
+              if (er) done(er)
+
+              done()
+            })
+        }
+      )
+
+      it(
+        'it should NOT allow discount to be added if payment is already applied',
+        function (done) {
+          chai.request(server)
+            .post('/transactions/register/discount')
+            .send({
+              requestId: localStorage.getItem('testRequestId_02'),
+              discountDate: '1985-05-11',
+              amount: '20.1%'
             })
             .set({ Authorization: localStorage.getItem('id_token') })
             .end(function (err, res) {
@@ -815,7 +881,7 @@ describe('SAN ROQUE APP', function () {
           chai.request(server)
             .post('/transactions/register/discount')
             .send({
-              requestId: localStorage.getItem('testRequestId_02'),
+              requestId: localStorage.getItem('testRequestId_04'),
               discountDate: '1985-05-11',
               amount: '20.1%'
             })
