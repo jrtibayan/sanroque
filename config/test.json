@@ -8,6 +8,8 @@
     "lastname": "Tibayan",
     "dateOfBirth": "03/11/1985",
     "email": "jrhod_baby@yahoo.com",
-    "role": "admin"
+    "role": "admin",
+    "gender": "Male",
+    "address": "P Burgos St, Lemery, Batangas"
   }
 }

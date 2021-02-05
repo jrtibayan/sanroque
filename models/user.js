@@ -25,6 +25,14 @@ const UserSchema = mongoose.Schema({
   contactNumber: {
     type: String
   },
+  gender: {
+    type: String,
+    required: true
+  },
+  address: {
+    type: String,
+    required: true
+  },
   // Referring, Patho, Medtech, Radtech
   license: {
     type: String
@@ -68,7 +76,7 @@ module.exports.addPatient = function (newPatient, callback) {
 
   // console.log('Will now encrypt the password');
 
-  newPatient.save(callback)  
+  newPatient.save(callback)
 
   // console.log('Inside User Model - ADDUSER End');
 }

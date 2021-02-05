@@ -16,6 +16,7 @@ chai.use(chaiHttp)
 localStorage.clear()
 
 describe('SAN ROQUE APP', function () {
+  this.bail(true)
   describe('Not logged in', function () {
     beforeEach(function () {
       localStorage.removeItem('id_token')
@@ -61,7 +62,7 @@ describe('SAN ROQUE APP', function () {
               let er = null
 
               if (err) er = err
-
+                console.log(res.body)
               res.should.have.status(200)
               res.body.should.have.property('success').eql(true)
               res.body.should.have.property('msg')
@@ -209,7 +210,9 @@ describe('SAN ROQUE APP', function () {
               dateOfBirth: 'bday8',
               email: 'jrhod_baby8@yahoo.com',
               password: 'password8',
-              role: 'director2'
+              role: 'director2',
+              gender: 'gender',
+              address: 'address'
             })
             .set({ Authorization: localStorage.getItem('id_token') })
             .end(function (err, res) {
@@ -239,7 +242,9 @@ describe('SAN ROQUE APP', function () {
               lastname: 'L1',
               dateOfBirth: 'bday5',
               email: 'jrhod_babyp1@yahoo.com',
-              contactNumber: '09173232323'
+              contactNumber: '09173232323',
+              gender: 'gender',
+              address: 'address'
             })
             .set({ Authorization: localStorage.getItem('id_token') })
             .end(function (err, res) {
@@ -299,7 +304,9 @@ describe('SAN ROQUE APP', function () {
               dateOfBirth: 'bday2',
               email: 'jrhod_baby21@yahoo.com',
               password: 'password2',
-              role: 'cashier'
+              role: 'cashier',
+              gender: 'gender',
+              address: 'address'
             })
             .set({ Authorization: localStorage.getItem('id_token') })
             .end(function (err, res) {
@@ -331,7 +338,9 @@ describe('SAN ROQUE APP', function () {
               password: 'password3',
               role: 'medtech',
               license: 'medtech LICENSE',
-              signatoryName: 'signatoryName medtech'
+              signatoryName: 'signatoryName medtech',
+              gender: 'gender',
+              address: 'address'
             })
             .set({ Authorization: localStorage.getItem('id_token') })
             .end(function (err, res) {
@@ -363,7 +372,9 @@ describe('SAN ROQUE APP', function () {
               password: 'password4',
               role: 'radtech',
               license: 'radtech LICENSE',
-              signatoryName: 'signatoryName radtech'
+              signatoryName: 'signatoryName radtech',
+              gender: 'gender',
+              address: 'address'
             })
             .set({ Authorization: localStorage.getItem('id_token') })
             .end(function (err, res) {
@@ -394,7 +405,9 @@ describe('SAN ROQUE APP', function () {
               contactNumber: 'contact 0917',
               email: 'jrhod_baby5@yahoo.com',
               password: 'password5',
-              role: 'manager'
+              role: 'manager',
+              gender: 'gender',
+              address: 'address'
             })
             .set({ Authorization: localStorage.getItem('id_token') })
             .end(function (err, res) {
@@ -428,7 +441,9 @@ describe('SAN ROQUE APP', function () {
               dateOfBirth: 'bday6',
               email: 'jrhod_baby6@yahoo.com',
               password: 'password6',
-              role: 'director'
+              role: 'director',
+              gender: 'gender',
+              address: 'address'
             })
             .set({ Authorization: localStorage.getItem('id_token') })
             .end(function (err, res) {
@@ -458,7 +473,9 @@ describe('SAN ROQUE APP', function () {
               dateOfBirth: 'bday7',
               email: 'jrhod_baby7@yahoo.com',
               password: 'password7',
-              role: 'director2'
+              role: 'director2',
+              gender: 'gender',
+              address: 'address'
             })
             .set({ Authorization: localStorage.getItem('id_token') })
             .end(function (err, res) {
@@ -489,13 +506,15 @@ describe('SAN ROQUE APP', function () {
               lastname: 'L1',
               dateOfBirth: 'bday5',
               email: 'jrhod_babyp1@yahoo.com',
-              contactNumber: '09173232323'
+              contactNumber: '09173232323',
+              gender: 'gender',
+              address: 'address'
             })
             .set({ Authorization: localStorage.getItem('id_token') })
             .end(function (err, res) {
               let er = null
               if (err) er = err
-
+console.log(res.body)
               res.should.have.status(200)
               res.body.should.have.property('success').eql(true)
               res.body.should.have.property('msg')
@@ -520,7 +539,9 @@ describe('SAN ROQUE APP', function () {
               lastname: 'L1',
               dateOfBirth: 'bday5',
               email: 'jrhod_babyp1@yahoo.com',
-              contactNumber: '09173232323'
+              contactNumber: '09173232323',
+              gender: 'gender',
+              address: 'address'
             })
             .set({ Authorization: localStorage.getItem('id_token') })
             .end(function (err, res) {

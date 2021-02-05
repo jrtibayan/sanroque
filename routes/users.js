@@ -24,7 +24,9 @@ function prepareNewUser (user) {
     license: user.license,
     email: user.email,
     password: newPassword,
-    role: user.role
+    role: user.role,
+    gender: user.gender,
+    address: user.address
   })
   h.dlog('Prepared newUser')
 
@@ -60,7 +62,7 @@ function registerUser (newUser, newPassword, res) {
 
           return res.json(h.appRes(
             { success: true, msg: 'User added' },
-            { id: newUser._id, fullname: newUser.lastname + ', ' + newUser.firstname}
+            { id: newUser._id, fullname: newUser.lastname + ', ' + newUser.firstname }
           ))
         }
       })

@@ -21,7 +21,9 @@ router.post(
       lastname: patient.lastname,
       dateOfBirth: patient.dateOfBirth,
       email: patient.email,
-      contactNumber: patient.contactNumber
+      contactNumber: patient.contactNumber,
+      gender: patient.gender,
+      address: patient.address
     })
 
     Patient.addPatient(newUser, (err, patient) => {
@@ -33,7 +35,7 @@ router.post(
       h.dlog('Patient registered')
       return res.json(h.appRes(
         { success: true, msg: 'Patient added' },
-        { id: newUser._id, fullname: newUser.lastname + ', ' + newUser.firstname}
+        { id: newUser._id, fullname: newUser.lastname + ', ' + newUser.firstname }
       ))
     })
   }
