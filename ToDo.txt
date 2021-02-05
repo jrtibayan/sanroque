@@ -1,5 +1,34 @@
 1. create schema for results = collection of results
-2. each test group will be a document
+2. each test group will be a document except the chemistry  where all of them will be one result only
+                {
+                  testCategoryId: 'chemId',
+                  testGroupId: 'chemTestId1',
+                  price: 100
+                },
+                {
+                  testCategoryId: 'chemId',
+                  testGroupId: 'chemTestId2',
+                  price: 200
+                },
+                {
+                  testCategoryId: 'hemaId',
+                  testGroupId: 'hemaTestId1',
+                  price: 1000
+                }
+3. this will be done using loop
+    if testcategory == chem
+        if already in collection
+            dont add
+        else
+            add new document for group test
+                properties of the document will be the different parameters for each testGroup
+    else
+        add new document for group test
+            properties of the document will be the different parameters for each testGroup
+
+4. since each document already have parameters, to input the results user must select a testGroup and submit a request
+5 the request will return all the fields that is needed and depending on the returned fields those input boxes for those fields will be the only ones shown. 
+6 since only the needed parameters are shown we only submit those and save the values to the database
 
 // since we can add transaction, discount and payment,
         we can now start with inputing for the report
