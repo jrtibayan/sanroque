@@ -848,7 +848,9 @@ describe('SAN ROQUE APP', function () {
             })
         }
       )
+    })
 
+    describe('POST /transactions/register/discount', function () {
       it(
         'it should NOT allow discount to be added if payment is already applied',
         function (done) {
@@ -953,5 +955,48 @@ describe('SAN ROQUE APP', function () {
         }
       )
     })
+
+/*
+    describe('POST /test-results/register', function () {
+      it(
+        'it should allow test result to be added',
+        function (done) {
+          chai.request(server)
+            .post('/register')
+            .send({
+              resultDate: '1985-08-11',
+              patientId: localStorage.getItem('patient01_id'),
+              address: 'patient01_id_address',
+              gender: 'patient01_id_address',
+              requestedTests: [
+                {
+                  testCategoryId: 'chemId',
+                  testGroupId: 'chemTestId3',
+                  price: 400
+                },
+                {
+                  testCategoryId: 'hemaId',
+                  testGroupId: 'hemaTestId2',
+                  price: 4000
+                }
+              ]
+            })
+            .set({ Authorization: localStorage.getItem('id_token') })
+            .end(function (err, res) {
+              let er = null
+              if (err) er = err
+
+              res.should.have.status(200)
+              res.body.should.have.property('success').eql(true)
+              res.body.should.have.property('msg')
+
+              if (er) done(er)
+
+              done()
+            })
+        }
+      )
+    })
+*/
   })
 })
