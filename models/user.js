@@ -62,6 +62,10 @@ module.exports.getUserById = function (id, callback) {
   User.findById(id, callback)
 }
 
+module.exports.getPatientById = function (id, callback) {
+  User.findById(id, callback)
+}
+
 module.exports.getUserByEmail = function (email, callback) {
   const query = { email: email }
   User.findOne(query, callback)

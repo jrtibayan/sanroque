@@ -45,6 +45,7 @@ const users = require('./routes/users')
 const doctors = require('./routes/doctors')
 const patients = require('./routes/patients')
 const transactions = require('./routes/transactions')
+const testResults = require('./routes/test-results')
 
 const port = 3000
 // const port = process.env.PORT || 8080;
@@ -71,6 +72,7 @@ app.use('/users', users)
 app.use('/doctors', doctors)
 app.use('/patients', patients)
 app.use('/transactions', transactions)
+app.use('/test-results', testResults)
 
 //  Index Route
 app.get('/', (req, res) => {

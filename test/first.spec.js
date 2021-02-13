@@ -240,7 +240,7 @@ describe('SAN ROQUE APP', function () {
               firstname: 'F1',
               middlename: 'M1',
               lastname: 'L1',
-              dateOfBirth: 'bday5',
+              dateOfBirth: '1985-03-11',
               email: 'jrhod_babyp1@yahoo.com',
               contactNumber: '09173232323',
               gender: 'gender',
@@ -401,7 +401,7 @@ describe('SAN ROQUE APP', function () {
               firstname: 'Jeric5',
               middlename: 'Padua5',
               lastname: 'Tibayan5',
-              dateOfBirth: 'bday5',
+              dateOfBirth: '2019-11-11',
               contactNumber: 'contact 0917',
               email: 'jrhod_baby5@yahoo.com',
               password: 'password5',
@@ -977,30 +977,27 @@ console.log(res.body)
       )
     })
 
-/*
     describe('POST /test-results/register', function () {
       it(
         'it should allow test result to be added',
         function (done) {
           chai.request(server)
-            .post('/register')
+            .post('/test-results/register')
             .send({
               resultDate: '1985-08-11',
               patientId: localStorage.getItem('patient01_id'),
-              address: 'patient01_id_address',
-              gender: 'patient01_id_address',
-              requestedTests: [
-                {
-                  testCategoryId: 'chemId',
-                  testGroupId: 'chemTestId3',
-                  price: 400
-                },
-                {
-                  testCategoryId: 'hemaId',
-                  testGroupId: 'hemaTestId2',
-                  price: 4000
-                }
-              ]
+              testCategory: 'Chemistry',
+              parameters: [
+                { name: 'param1', result: 'val1', normalVal: 'normal1' },
+                { name: 'param2', result: 'val2', normalVal: 'normal2' },
+                { name: 'param3', result: 'val3', normalVal: 'normal3' },
+                { mame: 'param4', result: 'val4', normalVal: 'normal4' }
+              ],
+              requestingPhysician: 'Firstname Lastname, Suffix',
+              pathoLicense: '12345678',
+              pathoName: 'Firstname Lastname, Suffix',
+              medTechLicense: '12345678',
+              medTechName: 'Firstname Lastname, Suffix'
             })
             .set({ Authorization: localStorage.getItem('id_token') })
             .end(function (err, res) {
@@ -1018,6 +1015,6 @@ console.log(res.body)
         }
       )
     })
-*/
+
   })
 })

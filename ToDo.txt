@@ -1,4 +1,5 @@
-1. create schema for results = collection of results
+// 1. create schema for results = collection of results
+// 1. create test input
 2. each test group will be a document except the chemistry  where all of them will be one result only
                 {
                   testCategoryId: 'chemId',
