@@ -209,7 +209,6 @@ describe('SAN ROQUE APP', function () {
               lastname: 'Jeric Tibayan8',
               dateOfBirth: 'bday8',
               email: 'jrhod_baby8@yahoo.com',
-              password: 'password8',
               role: 'director2',
               gender: 'gender',
               address: 'address'
@@ -303,7 +302,6 @@ describe('SAN ROQUE APP', function () {
               lastname: 'Jeric Tibayan2',
               dateOfBirth: 'bday2',
               email: 'jrhod_baby21@yahoo.com',
-              password: 'password2',
               role: 'cashier',
               gender: 'gender',
               address: 'address'
@@ -335,7 +333,6 @@ describe('SAN ROQUE APP', function () {
               lastname: 'Jeric Tibayan3',
               dateOfBirth: 'bday3',
               email: 'jrhod_baby3@yahoo.com',
-              password: 'password3',
               role: 'medtech',
               license: 'medtech LICENSE',
               signatoryName: 'signatoryName medtech',
@@ -369,7 +366,6 @@ describe('SAN ROQUE APP', function () {
               lastname: 'Jeric Tibayan4',
               dateOfBirth: 'bday4',
               email: 'jrhod_baby4@yahoo.com',
-              password: 'password4',
               role: 'radtech',
               license: 'radtech LICENSE',
               signatoryName: 'signatoryName radtech',
@@ -404,7 +400,6 @@ describe('SAN ROQUE APP', function () {
               dateOfBirth: '2019-11-11',
               contactNumber: 'contact 0917',
               email: 'jrhod_baby5@yahoo.com',
-              password: 'password5',
               role: 'manager',
               gender: 'gender',
               address: 'address'
@@ -440,7 +435,6 @@ describe('SAN ROQUE APP', function () {
               lastname: 'Jeric Tibayan6',
               dateOfBirth: 'bday6',
               email: 'jrhod_baby6@yahoo.com',
-              password: 'password6',
               role: 'director',
               gender: 'gender',
               address: 'address'
@@ -472,7 +466,6 @@ describe('SAN ROQUE APP', function () {
               lastname: 'Jeric Tibayan7',
               dateOfBirth: 'bday7',
               email: 'jrhod_baby7@yahoo.com',
-              password: 'password7',
               role: 'director2',
               gender: 'gender',
               address: 'address'

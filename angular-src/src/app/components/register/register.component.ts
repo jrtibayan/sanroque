@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { ValidateService } from '../../services/validate.service';
-import { AuthService } from '../../services/auth.service';
-import { FlashMessagesService } from 'angular2-flash-messages';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core'
+import { ValidateService } from '../../services/validate.service'
+import { AuthService } from '../../services/auth.service'
+import { FlashMessagesService } from 'angular2-flash-messages'
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'app-register',
@@ -10,64 +10,67 @@ import { Router } from '@angular/router';
   styleUrls: ['./register.component.sass']
 })
 export class RegisterComponent implements OnInit {
-
   firstname: String;
+  middlename: String;
   lastname: String;
-  suffix: String;
-  license: String;
+  dateOfBirth: String;
   email: String;
-  password: String;
   role: String;
+  gender: String;
+  address: String;
 
-  constructor(
+  constructor (
       private validateService: ValidateService,
       private authService: AuthService,
       private router: Router,
       private flashMessage: FlashMessagesService
   ) { }
 
-  ngOnInit(): void {
-    // request 
+  ngOnInit (): void {
+    // request
   }
 
-  onRegisterSubmit() {
+  onRegisterSubmit () {
     const user = {
       firstname: this.firstname,
+      middlename: this.middlename,
       lastname: this.lastname,
-      suffix: this.suffix,
-      license: this.license,
+      dateOfBirth: this.dateOfBirth,
       email: this.email,
-      password: this.password,
-      role: this.role
-    };
+      role: this.role,
+      gender: this.gender,
+      address: this.address
+    }
 
     // Required Fields
-    let fields = [
-      this.firstname, this.lastname,
-      this.email, this.password
-    ];
-    if(!this.validateService.validateRequired(fields)) {
-      this.flashMessage.show('Please fill in all fields', {cssClass: 'alert-danger', timeout: 3000});
-      return false;
+    const fields = [
+      this.firstname, this.middlename, this.lastname,
+      this.dateOfBirth,
+      this.email, this.role,
+      this.gender, this.address
+    ]
+    if (!this.validateService.validateRequired(fields)) {
+      this.flashMessage.show('Please fill in all fields', { cssClass: 'alert-danger', timeout: 3000 })
+      return false
     }
 
     // Validate Email
-    if(!this.validateService.validateEmail(user.email)) {
-      this.flashMessage.show('Please use a valid email', {cssClass: 'alert-danger', timeout: 3000});
-      return false;
+    if (!this.validateService.validateEmail(user.email)) {
+      this.flashMessage.show('Please use a valid email', { cssClass: 'alert-danger', timeout: 3000 })
+      return false
     }
 
     // Register User
     this.authService.registerUser(user).subscribe(
       data => {
-        if((data as any).success) {
-          this.flashMessage.show('User is now registered', {cssClass: 'alert-success', timeout: 3000});
-          this.router.navigate(['/register']);
+        if ((data as any).success) {
+          this.flashMessage.show('User is now registered', { cssClass: 'alert-success', timeout: 3000 })
+          this.router.navigate(['/register'])
         } else {
-          this.flashMessage.show((data as any).msg, {cssClass: 'alert-danger', timeout: 3000});
-          this.router.navigate(['/register']);
+          this.flashMessage.show((data as any).msg, { cssClass: 'alert-danger', timeout: 3000 })
+          this.router.navigate(['/register'])
         }
       }
-    );
+    )
   }
 }

